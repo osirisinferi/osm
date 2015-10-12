@@ -2,7 +2,7 @@
 Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, OpenWeatherMap, Weather, OpenSeaMap, stamen, basemap, exif, meta, widget
 Requires at least: 2.8
-Tested up to: 4.2.2
+Tested up to: 4.3.1
 Stable tag: 3.4
 
 Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, CSV, TXT ... 
@@ -15,12 +15,13 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * Homepage: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
 * Forum: [EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")/[DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
 * Twitter: [@WP_OSM_Plugin](https://twitter.com/wp_osm_plugin "@WP_OSM_Plugin")
-* FacebooK: (https://de-de.facebook.com/people/HanBlog-Net/100010432170169 "HanBlog")
+* FacebooK: [HanBlog](https://de-de.facebook.com/people/HanBlog-Net/100010432170169 "HanBlog")
 
 Features of the OSM-plugin:
 
 * OpenStreetMap, OpenSeaMap, OpenWeatherMap, BaseMap (AT), Stamen, WMS in posts/pages
 * Integration in post / page / widget
+* fullscreen map
 * HTML Popup Marker
 * GPX, KML and Textfiles (incl. upload in Mediathek)
 * Display Photos with EXIF meta data in the map 
