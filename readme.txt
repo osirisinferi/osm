@@ -15,7 +15,7 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 * Homepage: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
 * Forum: [EN](http://wp-osm-plugin.hanblog.net/forum/forum-en/ "OSM-plugin forum EN")/[DE](http://wp-osm-plugin.hanblog.net/forum/forum-de/ "OSM-plugin forum DE")
 * Twitter: [@WP_OSM_Plugin](https://twitter.com/wp_osm_plugin "@WP_OSM_Plugin")
-* FacebooK: (https://de-de.facebook.com/people/HanBlog-Net/100010432170169 "HanBlog")
+* FacebooK: [HanBlog Net](https://de-de.facebook.com/people/HanBlog-Net/100010432170169 "HanBlog")
 
 Features of the OSM-plugin:
 
