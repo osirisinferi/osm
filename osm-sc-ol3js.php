@@ -221,7 +221,6 @@ $output .= '
 
       if ($MarkerArray[$Counter][Marker] != ""){
         $IconURL = OSM_PLUGIN_ICONS_URL.$MarkerArray[$Counter][Marker];
-        
         $MarkerText = addslashes($MarkerArray[$Counter][text]);
         if (Osm_icon::isOsmIcon($MarkerArray[$Counter][Marker]) == 1){
           $Icon_tmp = Osm_icon::getIconsize($MarkerArray[$Counter][Marker]);
@@ -234,7 +233,7 @@ $output .= '
         }
       }
       else {
-        //$this->traceText(DEBUG_ERROR, $MarkerArray[$Counter][Marker]);
+        $MarkerText = addslashes($MarkerArray[$Counter][text]);
         $IconURL = OSM_PLUGIN_ICONS_URL.$Icon[name];
         $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
       } 
