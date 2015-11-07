@@ -18,13 +18,17 @@
 
 class Osm_OLJS3
 {
-  function addTileLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit, $a_theme){
+  function addTileLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_WMSType, $a_WMSAttrName, $a_WMSAttrUrl, $a_WMSAddress, $a_WMSParam, $a_theme){
     Osm::traceText(DEBUG_INFO, "addTileLayer V3(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
-    $TileLayer = '';
+    $TileLayer = '
+           var attribution = new ol.control.Attribution({
+        collapsible: false
+      });
+      ';
     if ($a_Type == "osm"){
       $TileLayer .= '
       var raster = new ol.layer.Tile({
-        source: new ol.source.OSM({})
+        source: new ol.source.OSM({ })
       });';
     }
 
@@ -32,29 +36,40 @@ class Osm_OLJS3
       $TileLayer .= '
       var raster = new ol.layer.Tile({
         source: new ol.source.Stamen({
-            attributions: [
-              new ol.Attribution({
-                html: "MAP tiles by <a href=\"http://stamen.com/\">Stamen Design</a>, " +
-                "under <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY" +
-                " 3.0</a>."
-              }),
-              ol.source.OSM.ATTRIBUTION
-            ],
             layer: "toner"
           })
         });
       ';
-      }
+  }
       else if ($a_Type == "stamen_watercolor"){
-        $TileLayer .= '
-          var raster = new ol.layer.Tile({
-            source: new ol.source.Stamen({layer: "watercolor"})
-          });';
+      $TileLayer .= '
+      var raster = new ol.layer.Tile({
+        source: new ol.source.Stamen({
+            layer: "watercolor"
+          })
+        });
+      ';
       }
       else if ($a_Type == "stamen_terrain-labels"){
         $TileLayer .= '
         var raster = new ol.layer.Tile({
           source: new ol.source.Stamen({layer: "terrain-labels"})
+        });';
+      }
+      else if ($a_Type == "tilewms"){
+        $TileLayer .= '
+        var raster = new ol.layer.Tile({
+          extent: [-13884991, 2870341, -7455066, 6338219],        
+          source: new ol.source.TileWMS({
+            attributions: [
+              new ol.Attribution({
+                html: "<a href=\"http://www.HanBlog.Net/\">WP OSM Plugin</a> and &copy; " +
+                "<a href=\"http://'.$a_WMSAttrUrl.'/\">'.$a_WMSAttrName.'</a>"
+              })],
+            url: "'.$a_WMSAddress.'",
+            params: {'.$a_WMSParam.'},
+            serverType: "'.$a_WMSType.'"
+          })
         });';
       }
       else if ($a_Type == "openseamap"){
@@ -150,8 +165,15 @@ class Osm_OLJS3
       }
     if (strtolower($a_MapControl[0])== 'fullscreen') {
       $TileLayer .= '
-      var Controls = ol.control.defaults().extend([
-          new ol.control.FullScreen()
+      var Controls = ol.control.defaults({ attribution: false }).extend([
+          new ol.control.FullScreen(),
+          attribution
+      ]); ';
+}
+    else {
+      $TileLayer .= '
+      var Controls = ol.control.defaults({ attribution: false }).extend([
+          attribution
       ]); ';
     }
 

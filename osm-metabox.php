@@ -96,7 +96,7 @@ function osm_map_create_shortcode_function( $post ) {
       <select name="osm_marker_marker">
       <?php include('osm-marker-select.php'); ?>
       </select>
-      ( <a href="http://wp-osm-plugin.hanblog.net/wp-osm-plugin-icons/" target="_blank"> icons</a> )<br><br>
+      ( <a href="http://wp-osm-plugin.hanblog.net/cc0-license-map-icons-collection/" target="_blank"> icons</a> )<br><br>
       <b>4. <?php $url = 'http://wp-osm-plugin.hanblog.net/'; 
       $link = sprintf( __( 'Adjust the map and click into the map to generate the shortcode. Find more features  <a href="%s" target="_blank">here</a> !', 'OSM-plugin' ), esc_url( $url ) );
       echo $link; ?></b><br><br>
@@ -124,31 +124,18 @@ function osm_map_create_shortcode_function( $post ) {
        <b>1. <?php _e('Map type','OSM-plugin') ?></b>:
        <select name="osm_geotag_map_type">
        <?php include('osm-maptype-select.php'); ?>
-       </select>
-       <b>2. <?php _e('OSM control theme','OSM-plugin') ?></b>: 
-       <select name="osm_geotag_theme">
-       <?php include('osm-theme-select.php'); ?>
        </select><br><br>
-       <b>3. <?php _e('Marker icon','OSM-plugin') ?></b>:
+       <b>2. <?php _e('Marker icon','OSM-plugin') ?></b>:
        <select name="osm_geotag_marker">
        <?php include('osm-marker-select.php'); ?>
-       </select>
-       <b>4. <?php _e('Draw a line','OSM-plugin') ?></b>:
-       <select name="osm_geotag_line">
-       <option value="none"><?php _e('none','OSM-plugin') ?></option>
-       <option value="green"><?php _e('green','OSM-plugin') ?></option>
-       <option value="red"><?php _e('red','OSM-plugin') ?></option>
-       <option value="blue"><?php _e('blue','OSM-plugin') ?></option>
-       <option value="black"><?php _e('black','OSM-plugin') ?></option>
        </select> <br><br>
-       <b>5. <?php _e('post type','OSM-plugin') ?></b>:
+       <b>3. <?php _e('post type','OSM-plugin') ?></b>:
        <select name="osm_geotag_posttype">
-       <option value="any"><?php _e('any','OSM-plugin') ?></option>
        <option value="post"><?php _e('post','OSM-plugin') ?></option>
        <option value="page"><?php _e('page','OSM-plugin') ?></option>
        </select>
-       ( <a href="http://wp-osm-plugin.hanblog.net/wp-osm-plugin-icons/" target="_blank"> icons</a> )<br><br>
-       <b>6. <?php $url = 'http://wp-osm-plugin.hanblog.net/'; 
+       ( <a href="http://wp-osm-plugin.hanblog.net/cc0-license-map-icons-collection/" target="_blank"> icons</a> )<br><br>
+       <b>4. <?php $url = 'http://wp-osm-plugin.hanblog.net/'; 
        $link = sprintf( __( 'Adjust the map and click into the map to generate the shortcode. Find more features  <a href="%s" target="_blank">here</a> !', 'OSM-plugin' ), esc_url( $url ) );
        echo $link; ?><br><br></b>
        <?php echo Osm::sc_showMap(array('msg_box'=>'metabox_geotag_sc_gen','lat'=>OSM_default_lat,'long'=>OSM_default_lon,'zoom'=>OSM_default_zoom, 'type'=>'mapnik_ssl', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>

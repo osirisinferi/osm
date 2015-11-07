@@ -28,7 +28,13 @@
     'marker_latlon'  => 'No',
     'map_border'  => '2px solid grey',
     'marker_name' => 'NoName',
-    'control' => 'No'
+    'control' => 'No',
+    'wms_type' => 'wms_type',
+    'wms_address' => 'wms_address',
+    'wms_param' => 'wms_param',
+    'wms_attr_name' => 'wms_attr_name',
+    'wms_attr_url' => 'wms_attr_url',
+    'tagged_type' => 'no'
     ), $atts));
 
     $type = strtolower($type);
@@ -110,12 +116,8 @@
     $output .= '(function($) {';
 
     $ov_map = "ov_map";
-    $extmap_type = "extmap_type";
-    $extmap_name = "extmap_name";
-    $extmap_address = "extmap_address";
-    $extmap_init = "extmap_init";
     $theme = "theme";
-    $output .= Osm_OLJS3::addTileLayer($MapName, $type, $ov_map, $array_control, $extmap_type, $extmap_name, $extmap_address, $extmap_init, $theme);
+    $output .= Osm_OLJS3::addTileLayer($MapName, $type, $ov_map, $array_control, $wms_type, $wms_attr_name, $wms_attr_url, $wms_address, $wms_param, $theme);
 
     if ($type == "openseamap"){
       $output .= '
@@ -150,11 +152,10 @@
       $output .= '
       var '.$MapName.' = new ol.Map({';
 
-if ($array_control[0]!="No"){
+
       $output .= '
 controls: Controls,
 ';
-}
 
 $output .= '
         interactions: ol.interaction.defaults({mouseWheelZoom:false}),
@@ -178,12 +179,12 @@ $output .= '
       else{
         for($x=0;$x<sizeof($FileListArray);$x++){
           $temp = explode(".",$FileListArray[$x]);
-	  $FileType = strtolower($temp[(count($temp)-1)]);
-	  if (($FileType == "gpx")||($FileType == "kml")){
-	    if (sizeof($FileColorListArray) == 0){$Color = "blue";}
-	    else {$Color = $FileColorListArray[$x];}
-	    $gpx_marker_name = "mic_blue_pinother_02.png";
-	    if ($Color == "blue"){$gpx_marker_name = "mic_blue_pinother_02.png";}
+	      $FileType = strtolower($temp[(count($temp)-1)]);
+	      if (($FileType == "gpx")||($FileType == "kml")){
+	        if (sizeof($FileColorListArray) == 0){$Color = "blue";}
+	        else {$Color = $FileColorListArray[$x];}
+	        $gpx_marker_name = "mic_blue_pinother_02.png";
+	        if ($Color == "blue"){$gpx_marker_name = "mic_blue_pinother_02.png";}
             else if ($Color == "red"){$gpx_marker_name = "mic_red_pinother_02.png";}
             else if ($Color == "green"){$gpx_marker_name = "mic_green_pinother_02.png";}
             else if ($Color == "black"){$gpx_marker_name = "mic_black_pinother_02.png";}
@@ -196,6 +197,78 @@ $output .= '
         //$output .= 'osm_addPopupClickhandler('.$MapName.',  "'.$MapName.'"); ';
 	  }
     } // $file_list != "NoFile"
+
+
+  if (($tagged_type == "post") || ($tagged_type == "page") || ($tagged_type == "any")){
+    $marker_name = Osm_icon::replaceOldIcon($marker_name);
+      if (Osm_icon::isOsmIcon($marker_name) == 1){
+        $Icon = Osm_icon::getIconsize($marker_name);
+        $Icon["name"]  = $marker_name;
+      }
+      else { // if no marker is set for the post
+        $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
+        $this->traceText(DEBUG_ERROR, $marker_name);
+        $Icon = Osm_icon::getIconsize($marker_name);
+        $Icon["name"]  = $marker_name;
+      }      
+    $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
+
+    $MarkerArray = OSM::OL3_createMarkerList('osm_l', 'Osm_All', 'Osm_None', $tagged_type, 'Osm_All', 'none');
+
+    $NumOfMarker = count($MarkerArray);
+    $Counter = 0;
+    foreach( $MarkerArray as $Marker ) {
+
+      if ($MarkerArray[$Counter][Marker] != ""){
+        $IconURL = OSM_PLUGIN_ICONS_URL.$MarkerArray[$Counter][Marker];
+        
+        $MarkerText = addslashes($MarkerArray[$Counter][text]);
+        if (Osm_icon::isOsmIcon($MarkerArray[$Counter][Marker]) == 1){
+          $Icon_tmp = Osm_icon::getIconsize($MarkerArray[$Counter][Marker]);
+        }
+        else {
+          $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
+          // set it do invidual marker
+          $this->traceText(DEBUG_INFO, "e_not_osm_icon");
+          //$this->traceText(DEBUG_INFO, $MarkerArray[$Counter][Marker]);
+        }
+      }
+      else {
+        //$this->traceText(DEBUG_ERROR, $MarkerArray[$Counter][Marker]);
+        $IconURL = OSM_PLUGIN_ICONS_URL.$Icon[name];
+        $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
+      } 
+
+     $output .= '
+		var iconStyle'.$Counter.' = new ol.style.Style({
+		  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+		    anchor: [('.$Icon_tmp[offset_width].'*-1),('.$Icon_tmp[offset_height].'*-1)],
+		    anchorXUnits: "pixels",
+		    anchorYUnits: "pixels",
+		    opacity: 0.9,
+		    src: "'.$IconURL.'"
+		  }))
+		});
+        var iconFeature'.$Counter.' = new ol.Feature({
+          geometry: new ol.geom.Point(
+	      ol.proj.transform(['.$MarkerArray[$Counter][lon].','.$MarkerArray[$Counter][lat].'], "EPSG:4326", "EPSG:3857")),
+          name: "'.$MarkerText.'"
+        });
+		iconFeature'.$Counter.'.setStyle(iconStyle'.$Counter.');
+        if ('.$Counter.' == 0){
+          var vectorMarkerSource = new ol.source.Vector({});
+		  var vectorMarkerLayer = new ol.layer.Vector({
+		    source: vectorMarkerSource
+		  });
+        }
+        vectorMarkerSource.addFeature(iconFeature'.$Counter.');
+       ';
+       $Counter = $Counter +1;
+    } // foreach(MarkerArray)
+
+    $output .= $MapName.'.addLayer(vectorMarkerLayer);';
+
+   }
 
    if (strtolower($marker_latlon) == 'osm_geotag'){ 
       global $post;

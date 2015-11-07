@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 3.4.1
+Version: 3.5
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 2.8
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.4.1");
+define ("PLUGIN_VER", "V3.5");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -325,12 +325,74 @@ class Osm
     $flip = ($hemi == 'W' or $hemi == 'S') ? -1 : 1;
     return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
   }
-  
+ 
+///////////////////////
+
+
+  function OL3_createMarkerList($a_import, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy)
+  {
+     $this->traceText(DEBUG_INFO, "OL3_createMarkerList(".$a_import.",".$a_import_osm_cat_incl_name.",".$a_import_osm_cat_excl_name.",".$a_post_type.",".$a_import_osm_custom_tax_incl_name.",".$a_custom_taxonomy.")");
+     global $post;
+     $post_org = $post;
+     
+    $CustomFieldName = get_option('osm_custom_field','OSM_geo_data');   
+      
+     if ($a_import == 'osm' || $a_import == 'osm_l'){
+       // let's see which posts are using our geo data ...
+       //+++
+       global $wpdb;
+       global $post_type;
+      
+
+       $post_type     = mysql_real_escape_string($a_post_type);
+       $CustomFieldName     = mysql_real_escape_string($CustomFieldName);
+       
+       $querystr = "
+       SELECT DISTINCT wposts.* 
+       FROM $wpdb->posts wposts
+	     LEFT JOIN $wpdb->postmeta wpostmeta ON wposts.ID = wpostmeta.post_id 
+	     LEFT JOIN $wpdb->term_relationships ON (wposts.ID = $wpdb->term_relationships.object_id)
+	     LEFT JOIN $wpdb->term_taxonomy ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id)
+       WHERE wpostmeta.meta_key = '$CustomFieldName'
+       AND wposts.post_status = 'publish'
+       AND wposts.post_type = '$post_type'
+       ORDER BY wpostmeta.meta_value ASC
+       ";
+
+      $pageposts = $wpdb->get_results($querystr, OBJECT);
+ 
+
+if ($pageposts){
+  foreach ($pageposts as $post){
+     setup_postdata($post); 
+      $Data = get_post_meta($post->ID, 'OSM_geo_data', true);
+         // remove space before and after comma
+      $Data = preg_replace('/\s*,\s*/', ',',$Data);
+      $GeoData_Array = explode( ' ', $Data );
+  	  list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
+      $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
+      $PostMarker = Osm_icon::replaceOldIcon($PostMarker);
+      
+      $Marker_Txt = '<a href="'.get_permalink($post->ID).'">'.$Category_Txt.get_the_title($post->ID).'  </a><br>';
+      $Marker_Txt .= get_the_excerpt($post->ID);
+      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'popup_height'=>'100', 'popup_width'=>'150', 'marker'=>$Icon[name], 'text'=>$Marker_Txt, 'Marker'=>$PostMarker);
+}
+     $post = $post_org;
+     $this->traceText(DEBUG_INFO, "Found Marker ".count($MarkerArray)); 
+     return $MarkerArray;
+}
+else{
+     $this->traceText(DEBUG_ERROR, "No posts/pages with geotag found! "); 
+}
+        
+       }
+
+  }
  
   function createMarkerList($a_import, $a_import_UserName, $a_Customfield, $a_import_osm_cat_incl_name,  $a_import_osm_cat_excl_name, $a_post_type, $a_import_osm_custom_tax_incl_name, $a_custom_taxonomy)
   {
      $this->traceText(DEBUG_INFO, "createMarkerList(".$a_import.",".$a_import_UserName.",".$a_Customfield.")");
-	 global $post;
+     global $post;
      $post_org = $post;
       
      // make a dummymarker to you use icon.clone later

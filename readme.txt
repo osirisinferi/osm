@@ -3,13 +3,11 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, Google Maps, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, Open Layers, Open Street Map, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, OpenWeatherMap, fullscreen, OpenSeaMap, stamen, basemap, exif, meta, widget
 Requires at least: 2.8
 Tested up to: 4.3.1
-Stable tag: 3.4.1
+Stable tag: 3.5
 
-Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, CSV, TXT ... 
+Customize maps in your post, pages and widgets. Add geotag to your blog and site. Use GPX, KML, ... 
 
 == Description ==
-If you want to download the OSM-plugin you are right here!
-
 If you want to get detailed information about the OSM-plugin visit these pages:
 
 * Homepage: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
@@ -70,6 +68,9 @@ There must be not format tag (like href ...) in the shortcode.
 
 
 == Changelog ==
+= 3.5 =
+* NEW: Performance improvements for geotagged posts (osm_map_v3)
+* FIX: Attribution according to OpenStreetMap
 = 3.4.1 =
 * FIX: description @ kml file were missing
 = 3.4 =

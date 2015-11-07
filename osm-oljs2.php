@@ -661,28 +661,15 @@ class Osm_OpenLayers
         MapTypeField = " type=\"" + document.post.osm_geotag_map_type.value + "\""; 
       }
 
-      if (document.post.osm_geotag_line.value != "none"){
-        Linefield = " import_osm_line_color=\""+ document.post.osm_geotag_line.value + "\"";
-      }
+        PostTypeField = " tagged_type=\""+document.post.osm_geotag_posttype.value+"\"";
 
-      if (document.post.osm_geotag_posttype.value != "post"){
-        PostTypeField = " post_type=\""+document.post.osm_geotag_posttype.value+"\"";
-      }
 
       if (document.post.osm_geotag_marker.value != "none"){
         MarkerField = " marker_name=\"" + MarkerName + "\"";  
       }
-      if (document.post.osm_geotag_theme.value == "dark"){
-        ThemeField = " map_border=\"thin solid grey\" theme=\"dark\"";
-      }
-      if (document.post.osm_geotag_theme.value == "blue"){
-        ThemeField = " map_border=\"thin solid blue\" theme=\"ol\"";  
-      }
-      if (document.post.osm_geotag_theme.value == "orange"){
-        ThemeField = " map_border=\"thin solid orange\" theme=\"ol_orange\"";
-      }
 
-      GenTxt = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + "import=\"osm_l\"" + PostTypeField + Linefield + ThemeField + MarkerField + MapTypeField + "]"; 
+
+      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + PostTypeField + MarkerField + MapTypeField + "]"; 
 
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
