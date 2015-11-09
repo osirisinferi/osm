@@ -90,8 +90,88 @@ class Osm_OLJS3
               url: "http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
             })
           });';
-      }
-      else if ($a_Type == "basemap_at"){
+    }
+      else if ($a_Type == "cyclemap"){
+        $TileLayer .= '
+          var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              attributions: [
+               new ol.Attribution({
+                html: "All maps &copy; " +
+                 "<a href=\"http://www.opencyclemap.org/\">OpenCycleMap</a>"
+               }),
+               ol.source.OSM.ATTRIBUTION
+               ],
+               url: "http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+             })
+           });
+          ';
+    } 
+       else if ($a_Type == "cyclemap"){
+        $TileLayer .= '
+          var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              attributions: [
+               new ol.Attribution({
+               html: "All maps &copy; " +
+                 "<a href=\"http://www.opencyclemap.org/\">Outdoor</a>"
+               }),
+               ol.source.OSM.ATTRIBUTION
+               ],
+               url: "http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+             })
+           });
+          ';
+    } 
+         else if ($a_Type == "outdoor"){
+        $TileLayer .= '
+          var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              attributions: [
+               new ol.Attribution({
+                 html: "Maps &copy; " +
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+               }),
+               ol.source.OSM.ATTRIBUTION
+               ],
+               url: "http://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png"
+             })
+           });
+          ';
+    } 
+    else if ($a_Type == "landscape"){
+        $TileLayer .= '
+          var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              attributions: [
+               new ol.Attribution({
+                 html: "Maps &copy; " +
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+               }),
+               ol.source.OSM.ATTRIBUTION
+               ],
+               url: "http://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png"
+             })
+           });
+          ';
+    } 
+        else if ($a_Type == "spinal"){
+        $TileLayer .= '
+          var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              attributions: [
+               new ol.Attribution({
+                 html: "Maps &copy; " +
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+               }),
+               ol.source.OSM.ATTRIBUTION
+               ],
+               url: "http://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png"
+             })
+           });
+          ';
+    } 
+    else if ($a_Type == "basemap_at"){
 
         $TileLayer .= '
       var template = "{Layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
@@ -187,8 +267,14 @@ class Osm_OLJS3
 
 	  if (( $MapControl != 'control') && ($MapControl != 'fullscreen') && ($MapControl != 'mouseposition')&& ($MapControl != 'rotate')&& ($MapControl != 'scaleline')&& ($MapControl != 'zoom')&& ($MapControl != 'zoomslider')&& ($MapControl != 'zoomtoextent') && ($MapControl != 'no') && ($MapControl != 'mouseposition') && ($MapControl != 'off')) {
 	    Osm::traceText(DEBUG_ERROR, "e_invalid_control");
-	    $a_MapControl[0]='No';
-	  }
+	    $a_MapControl[0]='no';
+     }
+     else {
+        if (($MapControl != 'off') && ($MapControl != 'no')){
+       // up to now only fullscreen is supported.
+         $a_MapControl[0] = 'fullscreen';
+       }
+     }
     }
     return $a_MapControl;
   }
