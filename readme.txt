@@ -17,7 +17,7 @@ If you want to get detailed information about the OSM-plugin visit these pages:
 
 Features of the OSM-plugin:
 
-* OpenStreetMap, OpenSeaMap, OpenWeatherMap, BaseMap (AT), Stamen, WMS in posts/pages
+* OpenStreetMap, OpenSeaMap, OpenWeatherMap, BaseMap (AT), Stamen, WMS
 * Integration in post / page / widget
 * HTML Popup Marker
 * GPX and KML (incl. upload in Mediathek)
