@@ -94,6 +94,7 @@ function osm_map_create_shortcode_function( $post ) {
       <br><br>
       <b>3. <?php _e('marker icon','OSM-plugin') ?></b>:
       <select name="osm_marker_marker">
+      <option value="none"><?php _e('none','OSM-plugin') ?></option>
       <?php include('osm-marker-select.php'); ?>
       </select>
       ( <a href="http://wp-osm-plugin.hanblog.net/cc0-license-map-icons-collection/" target="_blank"> icons</a> )<br><br>
@@ -128,16 +129,20 @@ function osm_map_create_shortcode_function( $post ) {
        <b>2. <?php _e('Marker icon','OSM-plugin') ?></b>:
        <select name="osm_geotag_marker">
        <?php include('osm-marker-select.php'); ?>
-       </select> <br><br>
+       </select> 
+       ( <a href="http://wp-osm-plugin.hanblog.net/cc0-license-map-icons-collection/" target="_blank"> icons</a> )
+       <br><br>
        <b>3. <?php _e('post type','OSM-plugin') ?></b>:
        <select name="osm_geotag_posttype">
        <option value="post"><?php _e('post','OSM-plugin') ?></option>
        <option value="page"><?php _e('page','OSM-plugin') ?></option>
-       </select>
-       ( <a href="http://wp-osm-plugin.hanblog.net/cc0-license-map-icons-collection/" target="_blank"> icons</a> )<br><br>
-       <b>4. <?php $url = 'http://wp-osm-plugin.hanblog.net/'; 
+       </select><br><br>
+        <b>4. <?php _e('Category Filter','OSM-plugin') ?></b>:
+       <?php $SelectedCat = wp_dropdown_categories(array('hide_empty' => 0, 'value_field'=>'name', 'name' => 'category_parent', 'orderby' => 'name', 'selected' => $category->parent, 'hierarchical' => true, 'show_option_none' => __('None')));?>
+       <br><br>
+       <b>5. <?php $url = 'http://wp-osm-plugin.hanblog.net/'; 
        $link = sprintf( __( 'Adjust the map and click into the map to generate the shortcode. Find more features  <a href="%s" target="_blank">here</a> !', 'OSM-plugin' ), esc_url( $url ) );
-       echo $link; ?><br><br></b>
+        echo $link; ?><br><br></b>
        <?php echo Osm::sc_showMap(array('msg_box'=>'metabox_geotag_sc_gen','lat'=>OSM_default_lat,'long'=>OSM_default_lon,'zoom'=>OSM_default_zoom, 'type'=>'mapnik_ssl', 'width'=>'450','height'=>'300', 'map_border'=>'thin solid grey', 'theme'=>'dark', 'control'=>'mouseposition,scaleline')); ?>
      </div> <!-- id="tab_geotag" -->
  

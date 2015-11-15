@@ -6,7 +6,7 @@ Description: Embeds maps in your blog and adds geo data to your posts.  Find sam
 Version: 3.5.2
 Author: MiKa
 Author URI: http://www.HanBlog.net
-Minimum WordPress Version Required: 2.8
+Minimum WordPress Version Required: 3.0
 */
 
 /*  (c) Copyright 2015  Michael Kang
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 2.8
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.5.2");
+define ("PLUGIN_VER", "V3.5.3");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -88,8 +88,8 @@ define('OSM_OPENLAYERS_THEMES_URL', content_url(). '/uploads/osm/theme/' );
 define('OSM_PLUGIN_JS_URL', OSM_PLUGIN_URL."js/");
 
 global $wp_version;
-if (version_compare($wp_version,"2.8","<")){
-  exit('[OSM plugin - ERROR]: At least Wordpress Version 2.8 is required for this plugin!');
+if (version_compare($wp_version,"3.0","<")){
+  exit('[OSM plugin - ERROR]: At least Wordpress Version 3.0 is required for this plugin!');
 }
 	
 // get the configuratin by
@@ -170,6 +170,7 @@ include('osm-metabox.php');
 include('osm-oljs2.php');
 include('osm-oljs3.php');
 include('osm-icon.php');
+include('osm-icon-class.php');
     	
 // let's be unique ... 
 // with this namespace
@@ -346,19 +347,34 @@ class Osm
 
        $post_type     = mysql_real_escape_string($a_post_type);
        $CustomFieldName     = mysql_real_escape_string($CustomFieldName);
-       
-       $querystr = "
-       SELECT DISTINCT wposts.* 
-       FROM $wpdb->posts wposts
-	     LEFT JOIN $wpdb->postmeta wpostmeta ON wposts.ID = wpostmeta.post_id 
-	     LEFT JOIN $wpdb->term_relationships ON (wposts.ID = $wpdb->term_relationships.object_id)
-	     LEFT JOIN $wpdb->term_taxonomy ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id)
-       WHERE wpostmeta.meta_key = '$CustomFieldName'
-       AND wposts.post_status = 'publish'
-       AND wposts.post_type = '$post_type'
-       ORDER BY wpostmeta.meta_value ASC
-       ";
 
+       if ($a_import_osm_cat_incl_name == "osm_all" ){
+         $querystr = "
+         SELECT DISTINCT wposts.* 
+         FROM $wpdb->posts wposts
+	       LEFT JOIN $wpdb->postmeta wpostmeta ON wposts.ID = wpostmeta.post_id 
+	       LEFT JOIN $wpdb->term_relationships ON (wposts.ID = $wpdb->term_relationships.object_id)
+	       LEFT JOIN $wpdb->term_taxonomy ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id)
+         WHERE wpostmeta.meta_key = '$CustomFieldName'
+         AND wposts.post_status = 'publish'
+         AND wposts.post_type = '$post_type'
+         ";
+      }
+      else {
+        $querystr = "
+        SELECT wposts.*
+        FROM $wpdb->posts wposts
+          JOIN $wpdb->postmeta wpostmeta ON (wpostmeta.post_id = wposts.ID)
+          JOIN $wpdb->term_relationships tr ON (tr.object_id = wposts.ID)
+          JOIN $wpdb->term_taxonomy tt ON (tt.term_taxonomy_id = tr.term_taxonomy_id)
+          JOIN $wpdb->terms t ON tt.term_id = t.term_id
+      WHERE wpostmeta.meta_key = '$CustomFieldName'
+      AND wposts.post_status = 'publish'
+      AND wposts.post_type = '$post_type'
+      AND tt.taxonomy = 'category'
+      AND t.name = '$a_import_osm_cat_incl_name'
+      ";
+     }
       $pageposts = $wpdb->get_results($querystr, OBJECT);
  
 
@@ -383,6 +399,12 @@ if ($pageposts){
 }
 else{
      $this->traceText(DEBUG_ERROR, "No posts/pages with geotag found! "); 
+     $Text = "CustomField: ".$CustomFieldName;
+     $this->traceText(DEBUG_ERROR, $Text);
+     $Text = "PostType: ".$post_type;
+     $this->traceText(DEBUG_ERROR, $Text);
+     $Text = "Tagged_Filter: ".$a_import_osm_cat_incl_name;
+     $this->traceText(DEBUG_ERROR, $Text);
 }
         
        }

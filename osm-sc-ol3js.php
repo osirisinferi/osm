@@ -34,7 +34,8 @@
     'wms_param' => 'wms_param',
     'wms_attr_name' => 'wms_attr_name',
     'wms_attr_url' => 'wms_attr_url',
-    'tagged_type' => 'no'
+    'tagged_type' => 'no',
+    'tagged_filter' => 'osm_all'
     ), $atts));
 
     $type = strtolower($type);
@@ -83,8 +84,9 @@
       $height_str = substr($height, 0, $pos+1 ); // make it 30% 
     }
 
+    $default_icon = $marker_name;
     $marker_name = Osm_icon::replaceOldIcon($marker_name);
-
+    
     $MapCounter += 1;
     $MapName = 'map_ol3js_'.$MapCounter;
 
@@ -173,7 +175,7 @@ $output .= '
       $FileListArray   = explode( ',', $file_list ); 
       $FileColorListArray = explode( ',', $file_color_list);
       $this->traceText(DEBUG_INFO, "(NumOfFiles: ".sizeof($FileListArray)." NumOfColours: ".sizeof($FileColorListArray).")!");
-      if ((sizeof($FileColorListArray) > 0) && (sizeof($FileColorListArray) != sizeof($FileListArray))){
+      if (($FileColorListArray[0] != "NoColor") && (sizeof($FileColorListArray) != sizeof($FileListArray))){
         $this->traceText(DEBUG_ERROR, "e_gpx_list_error");
       }
       else{
@@ -200,52 +202,31 @@ $output .= '
 
 
   if (($tagged_type == "post") || ($tagged_type == "page") || ($tagged_type == "any")){
-    $marker_name = Osm_icon::replaceOldIcon($marker_name);
-      if (Osm_icon::isOsmIcon($marker_name) == 1){
-        $Icon = Osm_icon::getIconsize($marker_name);
-        $Icon["name"]  = $marker_name;
-      }
-      else { // if no marker is set for the post
-        $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
-        $this->traceText(DEBUG_ERROR, $marker_name);
-        $Icon = Osm_icon::getIconsize($marker_name);
-        $Icon["name"]  = $marker_name;
-      }      
-    $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
-
-    $MarkerArray = OSM::OL3_createMarkerList('osm_l', 'Osm_All', 'Osm_None', $tagged_type, 'Osm_All', 'none');
+    $tagged_icon = new cOsm_icon($default_icon);
+    
+    $MarkerArray = OSM::OL3_createMarkerList('osm_l', $tagged_filter, 'Osm_None', $tagged_type, 'Osm_All', 'none');
 
     $NumOfMarker = count($MarkerArray);
     $Counter = 0;
     foreach( $MarkerArray as $Marker ) {
 
       if ($MarkerArray[$Counter][Marker] != ""){
-        $IconURL = OSM_PLUGIN_ICONS_URL.$MarkerArray[$Counter][Marker];
-        $MarkerText = addslashes($MarkerArray[$Counter][text]);
-        if (Osm_icon::isOsmIcon($MarkerArray[$Counter][Marker]) == 1){
-          $Icon_tmp = Osm_icon::getIconsize($MarkerArray[$Counter][Marker]);
-        }
-        else {
-          $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
-          // set it do invidual marker
-          $this->traceText(DEBUG_INFO, "e_not_osm_icon");
-          //$this->traceText(DEBUG_INFO, $MarkerArray[$Counter][Marker]);
-        }
+        $tagged_icon->setIcon($MarkerArray[$Counter][Marker]);
       }
-      else {
-        $MarkerText = addslashes($MarkerArray[$Counter][text]);
-        $IconURL = OSM_PLUGIN_ICONS_URL.$Icon[name];
-        $Icon_tmp = Osm_icon::getIconsize($Icon["name"] );
-      } 
+      else{
+         $tagged_icon->setIcon($default_icon);   
+       }
+ 
+       $MarkerText = addslashes($MarkerArray[$Counter][text]);
 
      $output .= '
 		var iconStyle'.$Counter.' = new ol.style.Style({
 		  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
-		    anchor: [('.$Icon_tmp[offset_width].'*-1),('.$Icon_tmp[offset_height].'*-1)],
+		    anchor: [('.$tagged_icon->getIconOffsetwidth().'*-1),('.$tagged_icon->getIconOffsetheight().'*-1)],
 		    anchorXUnits: "pixels",
 		    anchorYUnits: "pixels",
 		    opacity: 0.9,
-		    src: "'.$IconURL.'"
+		    src: "'.$tagged_icon->getIconURL().'"
 		  }))
 		});
         var iconFeature'.$Counter.' = new ol.Feature({
@@ -273,55 +254,34 @@ $output .= '
       global $post;
       $CustomFieldName = get_option('osm_custom_field','OSM_geo_data');
       $Data = get_post_meta($post->ID, $CustomFieldName, true);  
-      $PostMarker = get_post_meta($post->ID, 'OSM_geo_icon', true);
-      if ($PostMarker == ""){
-        $PostMarker = $marker_name;
+      $metaIcon = get_post_meta($post->ID, 'OSM_geo_icon', true);
+      $postgeotag_icon = new cOsm_icon($marker_name);
+      if ($metaIcon == ""){
+          $postgeotag_icon->setIcon($marker_name);
       }
-
+      else{
+         $postgeotag_icon->setIcon( $metaIcon);
+      }
       $Data = preg_replace('/\s*,\s*/', ',',$Data);
       // get pairs of coordination
       $GeoData_Array = explode( ' ', $Data );
       list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
       $DoPopUp = 'false';
 
-      $PostMarker = Osm_icon::replaceOldIcon($PostMarker);
-      if (Osm_icon::isOsmIcon($PostMarker) == 1){
-        $Icon = Osm_icon::getIconsize($PostMarker);
-        $Icon["name"]  = $PostMarker;
-      }
-      else { // if no marker is set for the post
-        $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
-        $this->traceText(DEBUG_ERROR, $PostMarker);
-        $Icon = Osm_icon::getIconsize($PostMarker);
-        $Icon["name"]  = $marker_name;
-      }
-
-     $MarkerUrl = OSM_PLUGIN_ICONS_URL.$Icon["name"];
       list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon,'no');
       if (($temp_lat != 0) || ($temp_lon != 0)){
       // set the center of the map to the first geotag
-        $output .= $MapName.'.getView().setCenter(ol.proj.transform(['.$temp_lon.','.$temp_lat.'], "EPSG:4326", "EPSG:3857"));';
+      $output .= $MapName.'.getView().setCenter(ol.proj.transform(['.$temp_lon.','.$temp_lat.'], "EPSG:4326", "EPSG:3857"));';
         
-        $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
+      $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
         //$output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.') ; ';
-        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$MarkerUrl.'",'.$Icon["offset_width"].','.$Icon["offset_height"].') ; ';
+        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$postgeotag_icon->getIconURL().'",'.$postgeotag_icon->getIconOffsetwidth().','.$postgeotag_icon->getIconOffsetheight().') ; ';
       }// templat lon != 0
     } //($marker_latlon  == 'OSM_geotag')
     else if (strtolower($marker_latlon) != 'no'){
       $DoPopUp = 'false';
 
-      $marker_name = Osm_icon::replaceOldIcon($marker_name);
-      if (Osm_icon::isOsmIcon($marker_name) == 1){
-        $Icon = Osm_icon::getIconsize($marker_name);
-        $Icon["name"]  = $marker_name;
-      }
-      else { // if no marker is set for the post
-        $this->traceText(DEBUG_ERROR, "e_not_osm_icon");
-        $this->traceText(DEBUG_ERROR, $marker_name);
-        $Icon = Osm_icon::getIconsize($marker_name);
-        $Icon["name"]  = $marker_name;
-      }
-
+      $marker_icon = new cOsm_icon($marker_name);
       $marker_latlon_temp = preg_replace('/\s*,\s*/', ',',$marker_latlon);
       // get pairs of coordination
       $GeoData_Array = explode( ' ', $marker_latlon_temp);
@@ -331,9 +291,8 @@ $output .= '
       if (($temp_lat != 0) || ($temp_lon != 0)){
         $lat_marker = $temp_lat;
         $lon_marker = $temp_lon;
-        $MarkerUrl = OSM_PLUGIN_ICONS_URL.$Icon["name"];
         $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
-        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$MarkerUrl.'",'.$Icon["offset_width"].','.$Icon["offset_height"].') ; ';
+        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$marker_icon->getIconURL().'",'.$marker_icon->getIconOffsetwidth().','.$marker_icon->getIconOffsetheight().') ; ';
       }// templat lon != 0
 
 }

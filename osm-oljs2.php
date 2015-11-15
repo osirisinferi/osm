@@ -654,22 +654,30 @@ class Osm_OpenLayers
       MapTypeField = "";
       Linefield = "";
       PostTypeField ="";
+      var CatFilterField = "";
+      
+      var dropdown = document.getElementById("cat");
 
       var MarkerName    = document.post.osm_geotag_marker.value;
+      
+      if (document.post.category_parent.value != "-1"){
+        CatFilterField = " tagged_filter=\"" + document.post.category_parent.value + "\""; 
+      }
 
       if (document.post.osm_geotag_map_type.value != "Mapnik"){
         MapTypeField = " type=\"" + document.post.osm_geotag_map_type.value + "\""; 
       }
 
-        PostTypeField = " tagged_type=\""+document.post.osm_geotag_posttype.value+"\"";
+      PostTypeField = " tagged_type=\""+document.post.osm_geotag_posttype.value+"\"";
 
 
       if (document.post.osm_geotag_marker.value != "none"){
         MarkerField = " marker_name=\"" + MarkerName + "\"";  
       }
 
+       
 
-      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + PostTypeField + MarkerField + MapTypeField + "]"; 
+      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + PostTypeField + MarkerField + MapTypeField + CatFilterField + "]"; 
 
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
