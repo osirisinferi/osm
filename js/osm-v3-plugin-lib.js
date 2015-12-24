@@ -77,6 +77,9 @@ function osm_addPopupClickhandler(a_MapObj, a_MapStr) {
     a_MapObj.on("singleclick", function(evt) {ClickdisplayFeatureInfo(evt);}); 
 }
 
+
+
+
 function osm_addMarkerLayer(a_mapname, a_lon, a_lat, a_MarkerName, a_MarkerXAnchor, a_MarkerYAnchor) {
   var iconFeature = new ol.Feature({
     geometry: new ol.geom.Point(

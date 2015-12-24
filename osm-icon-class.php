@@ -21,8 +21,8 @@ class cOsm_icon
   private $icon_name= 'no', $icon_URL = 'no';
   private $icon_height = -1,$icon_width = -1,$icon_offset_height = -1,$icon_offset_width = -1;
   private $icon_color = 'no';
-
- // just not to break shortcodes before v3.1
+  
+// just not to break shortcodes before v3.1
  private function replaceOldIcon($a_IconName){
   if ($a_IconName == "car.png"){
     return "mic_black_car_01.png";

@@ -19,7 +19,7 @@
 class Osm_OpenLayers
 {
   //support different types of GML Layers
-  function addVectorLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type)
+  public static function addVectorLayer($a_LayerName, $a_FileName, $a_Colour, $a_Type)
   {
     Osm::traceText(DEBUG_INFO, "addVectorLayer(".$a_LayerName.",".$a_FileName.",".$a_Colour.",".$a_Type.")");
     $Layer = '';
@@ -99,14 +99,14 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function addGoogleTileLayer($a_LayerName, $a_Type){
+  public static function addGoogleTileLayer($a_LayerName, $a_Type){
     $Layer = '';
     if ($a_Type == 'GooglePhysical'){
     $Layer .= '
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Physical",
                 {type: google.maps.MapTypeId.TERRAIN, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://www.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleStreet'){
@@ -117,7 +117,7 @@ class Osm_OpenLayers
          displayProjection: "EPSG:4326",
          layers: [new OpenLayers.Layer.Google("Google Streets",
                    {zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                  new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://www.hanblog.net\">OSM-Plugin<br><br></a>"})]});
       ';
     }
     else if ($a_Type == 'GoogleHybrid'){
@@ -125,7 +125,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Hybrid",
                 {type: google.maps.MapTypeId.HYBRID, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+                 new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://www.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'GoogleSatellite'){
@@ -134,7 +134,7 @@ class Osm_OpenLayers
     var '.$a_LayerName.' = new OpenLayers.Map("'.$a_LayerName.'", {projection: "EPSG:3857", displayProjection: "EPSG:4326",
         layers: [new OpenLayers.Layer.Google("Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, zoomMethod: null, animationEnabled: false, numZoomLevels: 23, MAX_ZOOM_LEVEL: 22}),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})]});
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://www.hanblog.net\">OSM-Plugin<br><br></a>"})]});
     ';
     }
     else if ($a_Type == 'AllGoogle'){
@@ -158,7 +158,7 @@ class Osm_OpenLayers
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22, zoomMethod: null}
             ),
-            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin<br><br></a>"})
+            new OpenLayers.Layer.Vector("OSM-plugin",{attribution:" <a href=\"http://www.hanblog.net\">OSM-Plugin<br><br></a>"})
         ]});
     '.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());
     ';
@@ -174,7 +174,7 @@ class Osm_OpenLayers
 }
 
 // support different types of GML Layers
-  function addTileLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit, $a_theme)
+  public static function addTileLayer($a_LayerName, $a_Type, $a_OverviewMapZoom, $a_MapControl, $a_ExtType, $a_ExtName, $a_ExtAddress, $a_ExtInit, $a_theme)
   {
     Osm::traceText(DEBUG_INFO, "addTileLayer(".$a_LayerName.",".$a_Type.",".$a_OverviewMapZoom.")");
 
@@ -242,7 +242,7 @@ class Osm_OpenLayers
                   });
       ';
       $Layer .= 'layerbasemap_at.metadata = {link: "http://www.basemap.at/"};';
-      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://basemap.at\">basemap.at</a> and <a href=\"http://wp-osm-plugin.hanblog.net\">OSM-Plugin</a>"});';
+      $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://basemap.at\">basemap.at</a> and <a href=\"http://www.hanblog.net\">OSM-Plugin</a>"});';
       $Layer .= ''.$a_LayerName.'.addLayers([layerbasemap_at, layerosm, layerOSM_Attr]);';
       $Layer .= ''.$a_LayerName.'.addControl(new OpenLayers.Control.LayerSwitcher());';
     }
@@ -317,7 +317,7 @@ class Osm_OpenLayers
       }
       else if (($a_Type == 'Ext') || ($a_Type == 'ext')) {
         $Layer .= 'var lmap = new OpenLayers.Layer.'.$a_ExtType.'("'.$a_ExtName.'","'.$a_ExtAddress.'",{'.$a_ExtInit.', attribution: "OpenLayers with"});';
-        $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://wp-osm-plugin.hanblog.net\">OSM plugin</a>"});';
+        $Layer .= 'var layerOSM_Attr = new OpenLayers.Layer.Vector("OSM-plugin",{attribution:"<a href=\"http://www.hanblog.net\">OSM plugin</a>"});';
         $Layer .= ''.$a_LayerName.'.addLayers([lmap,layerOSM_Attr]);';
       }
     }
@@ -356,7 +356,7 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function AddClickHandler($a_MapName, $a_msgBox, $a_post_id)
+  public static function AddClickHandler($a_MapName, $a_msgBox, $a_post_id)
   {
     Osm::traceText(DEBUG_INFO, "AddClickHandler(".$a_msgBox.")");
     $a_msgBox = strtolower($a_msgBox);
@@ -774,7 +774,7 @@ class Osm_OpenLayers
     return $Layer;
   }
 
-  function addMarkerListLayer($a_MapName, $Icon ,$a_MarkerArray, $a_DoPopUp)
+  public static function addMarkerListLayer($a_MapName, $Icon ,$a_MarkerArray, $a_DoPopUp)
   {
     Osm::traceText(DEBUG_INFO, "addMarkerListLayer(".$a_MapName.",".$Icon[name].",".$Icon[width].",".$Icon[height].",".$a_MarkerArray.",".$Icon[offset_width].",".$Icon[offset_height].",".$a_DoPopUp.")");
 
@@ -866,7 +866,7 @@ class Osm_OpenLayers
   }
 
 //++
-  function addLineLayer($a_LayerName, $a_MarkerArray)
+  public static function addLineLayer($a_LayerName, $a_MarkerArray)
   {
     Osm::traceText(DEBUG_INFO, "addLineLayer(".$a_LayerName.")");
 
@@ -883,7 +883,7 @@ class Osm_OpenLayers
 //--
 
     
-  function addTextLayer($a_MapName, $a_MarkerName, $a_marker_file)
+  public static function addTextLayer($a_MapName, $a_MarkerName, $a_marker_file)
   {
     Osm::traceText(DEBUG_INFO, "addTextLayer(".$a_marker_file.")");   
 
@@ -897,7 +897,7 @@ class Osm_OpenLayers
   } 
 
 /// discs
-   function addDiscs($centerListArray,$radiusListArray,$centerOpacityListArray,$centerColorListArray,
+  public static  function addDiscs($centerListArray,$radiusListArray,$centerOpacityListArray,$centerColorListArray,
                      $borderWidthListArray,$borderColorListArray,$borderOpacityListArray,$fillColorListArray,$fillOpacityListArray,$a_MapName) {
 
    $layer ='var discLayer = new OpenLayers.Layer.Vector("Disc Layer");';
@@ -919,7 +919,7 @@ class Osm_OpenLayers
    }
  /// end discs 
 // lines ++
-   function addLines($PointListArray,$a_LineColor,$a_LineWidth, $a_MapName)  
+   public static function addLines($PointListArray,$a_LineColor,$a_LineWidth, $a_MapName)  
    {   
      $layer = '';
      $layer.='var lineLayer = new OpenLayers.Layer.Vector("Line Layer");';
@@ -939,7 +939,7 @@ class Osm_OpenLayers
    }
 // //lines --
 
-  function setMapCenterAndZoom($a_MapName, $a_lat, $a_lon, $a_zoom)
+  public static function setMapCenterAndZoom($a_MapName, $a_lat, $a_lon, $a_zoom)
   {
     Osm::traceText(DEBUG_INFO, "setMapCenterAndZoom(".$a_lat.",".$a_lon.",".$a_zoom.")");
     $Layer = '';
@@ -959,7 +959,7 @@ class Osm_OpenLayers
   } 
 
 
-  function setGoogleMapCenterAndZoom($a_MapName, $a_lat, $a_lon, $a_zoom)
+  public static function setGoogleMapCenterAndZoom($a_MapName, $a_lat, $a_lon, $a_zoom)
   {
     Osm::traceText(DEBUG_INFO, "setGoogleMapCenterAndZoom(".$a_lat.",".$a_lon.",".$a_zoom.")");
     $Layer = '';
@@ -979,12 +979,16 @@ class Osm_OpenLayers
   } 
       
   // check the map-type, remove whit space and replace Osnmarender
-  function checkMapType($a_type){
+ public static  function checkMapType($a_type){
     // Osmarender is replaced by Mapnik
     if ($a_type == 'Osmarender'){
       return "Mapnik";
-    }
-    if ($a_type != 'Mapnik' && $a_type != 'mapnik_ssl' && $a_type != 'CycleMap' && $a_type != 'OpenSeaMap' && $a_type != 'stamen_watercolor' && $a_type != 'stamen_toner' && $a_type != 'OpenWeatherMap' && $a_type != 'OSMRoadsMap' && $a_type != 'basemap_at' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'GooglePhysical' && $a_type != 'GoogleStreet' && $a_type != 'GoogleHybrid' && $a_type != 'GoogleSatellite' && $a_type != 'Google Physical' && $a_type != 'Google Street' && $a_type != 'Google Hybrid' && $a_type != 'Google Satellite' && $a_type != 'Ext'){
+  }
+  elseif($a_type == 'GooglePhysical' || $a_type == 'GoogleStreet' || $a_type == 'GoogleHybrid' || $a_type == 'GoogleSatellite') {
+    return 'Mapnik';
+  }
+
+    if ($a_type != 'Mapnik' && $a_type != 'mapnik_ssl' && $a_type != 'CycleMap' && $a_type != 'OpenSeaMap' && $a_type != 'stamen_watercolor' && $a_type != 'stamen_toner' && $a_type != 'OpenWeatherMap' && $a_type != 'OSMRoadsMap' && $a_type != 'basemap_at' && $a_type != 'Google' && $a_type != 'All' && $a_type != 'AllGoogle' && $a_type != 'AllOsm' && $a_type != 'ext' && $a_type != 'Ext'){
       return "AllOsm";
     }
     // eg "Google Hybrid" => "GoogleHybrid"
@@ -993,7 +997,7 @@ class Osm_OpenLayers
   }
 
   // check the num of zoomlevels
-  function checkOverviewMapZoomlevels($a_Zoomlevels){
+ public static function checkOverviewMapZoomlevels($a_Zoomlevels){
     if ( $a_Zoomlevels > 17){
       Osm::traceText(DEBUG_ERROR, "Zoomlevel out of range!");
       return 0;
@@ -1001,7 +1005,7 @@ class Osm_OpenLayers
     return $a_Zoomlevels;
   }     
   
-  function checkControlType($a_MapControl){
+  public static function checkControlType($a_MapControl){
     foreach ( $a_MapControl as $MapControl ){
 	  Osm::traceText(DEBUG_INFO, "Checking the Map Control");
 	  $MapControl = strtolower($MapControl);

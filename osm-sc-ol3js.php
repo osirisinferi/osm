@@ -23,7 +23,7 @@
     'zoom'       => '4',
     'file_list'  => 'NoFile',
     'file_color_list'  => 'NoColor',
-    'type'       => 'Osm',
+    'type'       => 'osm',
     'jsname'     => 'dummy',
     'marker_latlon'  => 'No',
     'map_border'  => '2px solid grey',
@@ -40,56 +40,22 @@
     'mwz' => 'false'
     ), $atts));
 
-    $type = strtolower($type);
 
-    $map_center = preg_replace('/\s*,\s*/', ',',$map_center);
-    // get pairs of coordination
-    $map_center_Array = explode( ' ', $map_center );
-    list($lat, $lon) = explode(',', $map_center_Array[0]); 
+    $sc_args = new cOsm_arguments($width,  $height,  $map_center,  $zoom,  $file_list,  $file_color_list, $type, $jsname, $marker_latlon, $map_border, $marker_name, $marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name, $wms_type, $wms_attr_url, $tagged_type, $tagged_filter, $mwz); 
+    $lat = $sc_args->getMapCenterLat();
+    $lon = $sc_args->getMapCenterLon();
+    $array_control = $sc_args->getMapControl();
+    $width_str = $sc_args->getMapWidth_str();
+    $height_str = $sc_args->getMapHeight_str();
+    $type =  $sc_args->getMapType();
 
-    $array_control = explode( ',', $control);
-    $array_control    = Osm_OLJS3::checkControlType($array_control);
-    
-    if (($mwz != "true") && ($mwz != "false")){
+if (($mwz != "true") && ($mwz != "false")){
         $mwz = "false";
         Osm::traceText(DEBUG_ERROR, "Error at argument mwz (true|false)!");
     }
 
-    $pos = strpos($width, "%");
-    if ($pos == false) {
-      if ($width < 1){
-        Osm::traceText(DEBUG_ERROR, "e_map_size");
-        Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width.")!");
-        $width = 450;
-      }
-      $width_str = $width."px"; // make it 30px
-    } else {// it's 30%
-      $width_perc = substr($width, 0, $pos ); // make it 30 
-      if (($width_perc < 1) || ($width_perc >100)){
-        Osm::traceText(DEBUG_ERROR, "e_map_size");
-        Osm::traceText(DEBUG_INFO, "Error: ($width: ".$width.")!");
-        $width = "100%";
-      }
-      $width_str = substr($width, 0, $pos+1 ); // make it 30% 
-    }
+    
 
-    $pos = strpos($height, "%");
-    if ($pos == false) {
-      if ($height < 1){
-        Osm::traceText(DEBUG_ERROR, "e_map_size");
-        Osm::traceText(DEBUG_INFO, "Error: ($height: ".$height.")!");
-        $height = 300;
-      }
-      $height_str = $height."px"; // make it 30px
-    } else {// it's 30%
-      $height_perc = substr($height, 0, $pos ); // make it 30 
-      if (($height_perc < 1) || ($height_perc >100)){
-        Osm::traceText(DEBUG_ERROR, "e_map_size");
-        Osm::traceText(DEBUG_INFO, "Error: ($height: ".$height.")!");
-        $height = "100%";
-      }
-      $height_str = substr($height, 0, $pos+1 ); // make it 30% 
-    }
     if ($marker_size == "no"){
       $default_icon = new cOsm_icon($marker_name); 
     }
@@ -194,9 +160,9 @@ $output .= '
     if ($file_list != "NoFile"){
       $FileListArray   = explode( ',', $file_list ); 
       $FileColorListArray = explode( ',', $file_color_list);
-      $this->traceText(DEBUG_INFO, "(NumOfFiles: ".sizeof($FileListArray)." NumOfColours: ".sizeof($FileColorListArray).")!");
+      Osm::traceText(DEBUG_INFO, "(NumOfFiles: ".sizeof($FileListArray)." NumOfColours: ".sizeof($FileColorListArray).")!");
       if (($FileColorListArray[0] != "NoColor") && (sizeof($FileColorListArray) != sizeof($FileListArray))){
-        $this->traceText(DEBUG_ERROR, "e_gpx_list_error");
+        Osm::traceText(DEBUG_ERROR, "e_gpx_list_error");
       }
       else{
         for($x=0;$x<sizeof($FileListArray);$x++){
@@ -213,7 +179,7 @@ $output .= '
             $output .= Osm_OLJS3::addVectorLayer($MapName, $FileListArray[$x], $Color, $FileType, $x, $gpx_marker_name);
           }
           else {
-            $this->traceText(DEBUG_ERROR, "e_gpx_type_error");
+            Osm::traceText(DEBUG_ERROR, "e_gpx_type_error");
           }
         }
         //$output .= 'osm_addPopupClickhandler('.$MapName.',  "'.$MapName.'"); ';
@@ -230,14 +196,14 @@ $output .= '
     $Counter = 0;
     foreach( $MarkerArray as $Marker ) {
 
-      if ($MarkerArray[$Counter][Marker] != ""){
-        $tagged_icon->setIcon($MarkerArray[$Counter][Marker]);
+      if ($MarkerArray[$Counter]['Marker'] != ""){
+        $tagged_icon->setIcon($MarkerArray[$Counter]['Marker']);
       }
       else{
          $tagged_icon->setIcon($default_icon->getIconName());   
        }
  
-       $MarkerText = addslashes($MarkerArray[$Counter][text]);
+       $MarkerText = addslashes($MarkerArray[$Counter]['text']);
 
      $output .= '
 		var iconStyle'.$Counter.' = new ol.style.Style({
@@ -251,7 +217,7 @@ $output .= '
 		});
         var iconFeature'.$Counter.' = new ol.Feature({
           geometry: new ol.geom.Point(
-	      ol.proj.transform(['.$MarkerArray[$Counter][lon].','.$MarkerArray[$Counter][lat].'], "EPSG:4326", "EPSG:3857")),
+	      ol.proj.transform(['.$MarkerArray[$Counter]['lon'].','.$MarkerArray[$Counter]['lat'].'], "EPSG:4326", "EPSG:3857")),
           name: "'.$MarkerText.'"
         });
 		iconFeature'.$Counter.'.setStyle(iconStyle'.$Counter.');
@@ -270,13 +236,15 @@ $output .= '
 
    }
 
+   $temp_popup = '';
+   
    if (strtolower($marker_latlon) == 'osm_geotag'){ 
       global $post;
       $CustomFieldName = get_option('osm_custom_field','OSM_geo_data');
       $Data = get_post_meta($post->ID, $CustomFieldName, true);  
       $metaIcon_name = get_post_meta($post->ID, 'OSM_geo_icon', true);
       $postgeotag_icon = $default_icon;
-      if ($metaIcon == ""){
+      if ($metaIcon_name == ""){
           $postgeotag_icon=$default_icon;
       }
       else{
