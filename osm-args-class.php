@@ -149,7 +149,7 @@ private function setDisplayMarker($a_display_marker_name){
 
 
   function __construct($a_width,  $a_height, $a_map_center,  $zoom,  $file_list, $file_color_list, $a_type, $jsname, $marker_latlon, $map_border, 
-    $marker_name, $a_marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name,  $wms_type, $wms_attr_url, 
+    $marker_name, $a_marker_size, $control, $wms_address, $wms_param, $wms_attr_name,  $wms_type, $wms_attr_url, 
     $tagged_type, $tagged_filter, $mwz, $a_post_markers, $a_display_marker_name){
         
     $this->setLatLon($a_map_center) ;

@@ -43,7 +43,7 @@
     'display_marker_name' => 'false'
     ), $atts));
 
-    $sc_args = new cOsm_arguments($width,  $height,  $map_center,  $zoom,  $file_list,  $file_color_list, $type, $jsname, $marker_latlon, $map_border, $marker_name, $marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name, $wms_type, $wms_attr_url, $tagged_type, $tagged_filter, $mwz,$post_markers, $display_marker_name); 
+    $sc_args = new cOsm_arguments($width,  $height,  $map_center,  $zoom,  $file_list,  $file_color_list, $type, $jsname, $marker_latlon, $map_border, $marker_name, $marker_size, $control, $wms_address, $wms_param, $wms_attr_name, $wms_type, $wms_attr_url, $tagged_type, $tagged_filter, $mwz,$post_markers, $display_marker_name); 
  
     $lat = $sc_args->getMapCenterLat();
     $lon = $sc_args->getMapCenterLon();
