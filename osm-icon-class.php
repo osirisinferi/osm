@@ -75,7 +75,7 @@ class cOsm_icon
     $a_IconName == "wpttemp-green.png" || $a_IconName == "wpttemp-red.png" ||
     $a_IconName == "mic_yel_restaurant_chinese_01.png" ||
     $a_IconName == "mic_yel_campingtents_01.png" ||
-    $a_IconName == "mic_toilets_disability_01.png" || $a_IconName == "mic_shark_icon.png" ||
+    $a_IconName == "mic_blue_toilets_disability_01.png" || $a_IconName == "mic_shark_icon.png" ||
     $a_IconName == "mic_red_pizzaria_01.png" || $a_IconName == "mic_parasailing_01.png" ||
     $a_IconName == "mic_green_horseriding_01.png" ||
     $a_IconName == "mic_blue_tweet_01.png" ||

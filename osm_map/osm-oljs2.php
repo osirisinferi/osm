@@ -401,152 +401,82 @@ class Osm_OpenLayers
     $Layer .= '                     Clicklonlat.lat = Math.round( Clicklonlat.lat * 100000. ) / 100000.;';// markerposition
     $Layer .= '                     Clicklonlat.lon = Math.round( Clicklonlat.lon * 100000. ) / 100000.;';  
 
-    if ($a_msgBox == 'sc_gen'){  
+    if( $a_msgBox == 'metabox_marker_sc_gen'){
     $Layer .= ' 
-       div = document.getElementById("ShortCode_Div");
-
-       var MarkerName    = document.Markerform.osm_marker.value;
-       var AddFileOption = document.Addfileform.osm_add_file.value;
-       var BorderColour  = osm_getRadioValue("Bordercolourform");
-       var NaviName      = osm_getRadioValue("Naviform");
-       var CntrStyle     = osm_getRadioValue("ControlStyleform");
-
-       NaviField = "";
-       MarkerField = "";
-       MarkerTextField_01 = "";
-       MarkerTextField_02 = "";
-       MarkerTextField_03 = "";
-       MarkerTextField_04 = "";
-       FileField = "";
-       MapControlField = "";
-       BorderColourField = "";
-       ControlStyleField = "";
-       ZIndexField = "";
-    
-       if (MarkerName != "none"){
-         MarkerField = " marker=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";
-
-         if (NaviName != "undefined"){
-           NaviField = " marker_routing=\""+ NaviName + "\"";
-          }
-         if (document.Markertextform.MarkerText_01.value != "Max Mustermann"){
-           MarkerTextField_01 = " m_txt_01=\""+ document.Markertextform.MarkerText_01.value + "\"";
-         }
-         if (document.Markertextform.MarkerText_02.value != "Musterstr. 90"){
-           MarkerTextField_02 = " m_txt_02=\""+ document.Markertextform.MarkerText_02.value + "\"";
-         }
-         if (document.Markertextform.MarkerText_03.value != "1020 Mustercity"){
-           MarkerTextField_03 = " m_txt_03=\""+ document.Markertextform.MarkerText_03.value + "\"";
-         }
-         if (document.Markertextform.MarkerText_04.value != "MusterCountry"){
-           MarkerTextField_04 = " m_txt_04=\""+ document.Markertextform.MarkerText_04.value + "\"";
-         }
-       }'; // if (MarkerName != "none")
-
-    $Layer .= ' 
-       if ((AddFileOption != "none") && (document.Addfileform.FileURL.value != "http://")){
-         if (AddFileOption == "kml") {
-           FileField = " kml_file=\""+ document.Addfileform.FileURL.value + "\"";
-         }
-         if (AddFileOption == "gpx_red") {
-           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"red\"";
-         }
-         if (AddFileOption == "gpx_green") {
-           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"green\"";
-         }
-         if (AddFileOption == "gpx_blue") {
-           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"blue\"";
-         }
-         if (AddFileOption == "gpx_black") {
-           FileField = " gpx_file=\""+ document.Addfileform.FileURL.value + "\" gpx_colour=\"black\"";
-         }
-         if (AddFileOption == "text") {
-           FileField = " marker_file=\""+ document.Addfileform.FileURL.value + "\"";
-         }
-       }  
-    ';  
-    $Layer .= ' if (CntrStyle != "undefined"){
-                  ControlStyleField = " theme=\""+ CntrStyle + "\"";
-                }';
-    $Layer .= ' if (document.ZIndexform.ZIndex.checked){
-                  ZIndexField = " z_index=\""+ document.ZIndexform.ZIndex.value + "\"";  
-                }';    
-    $Layer .= ' if (document.MapControlform.MapControl.checked){
-                  MapControlField = " control=\""+ document.MapControlform.MapControl.value;  
-                }';
-    $Layer .= ' if (document.MapControlform.Mouseposition.checked){
-                  if (document.MapControlform.MapControl.checked){
-                    MapControlField = MapControlField + "," + document.MapControlform.Mouseposition.value;  
-                  }
-                  else{
-                   MapControlField = " control=\""+ document.MapControlform.Mouseposition.value;  
-                  }
-                }';
-    $Layer .= ' if ((document.MapControlform.Mouseposition.checked) || (document.MapControlform.MapControl.checked)) {';
-    $Layer .= '  MapControlField = MapControlField + "\"";';
-    $Layer .= '  }';
-
-    $Layer .= ' if (BorderColour != "undefined"){';
-    $Layer .= '   BorderColourField = " map_border=\"thin solid "+ BorderColour + "\"";';  
-    $Layer .= '  }';
-
-    $Layer .= ' div.innerHTML = "[osm_map lat=\"" + Centerlonlat.lat + "\" lon=\"" + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\"" + FileField + BorderColourField + MapControlField + MarkerField + MarkerTextField_01 + MarkerTextField_02 + MarkerTextField_03 + MarkerTextField_04 + NaviField + ZIndexField + ControlStyleField + " type=\""+LayerName+"\"]";';
-
-    $Layer .= ' markerslayer.clearMarkers();';
-    $Layer .= ' if (MarkerName != "none"){';
-
-    $Layer .= '	  var icon_Obj = osm_getIconSize(MarkerName);';
-
-    $Layer .= '	  var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);';
-    $Layer .= '   var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);';
-    $Layer .= '   var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerName;';
-    $Layer .= '   var click_icon = new OpenLayers.Icon(icon_url,icon_size,icon_offset); '; 
-    $Layer .= '   var icon_lonlat = new OpenLayers.LonLat(Clicklonlat.lon,Clicklonlat.lat).transform('.$a_MapName.'.displayProjection, '.$a_MapName.'.projection);';
-    $Layer .= '  markerslayer.addMarker(new OpenLayers.Marker(icon_lonlat,click_icon.clone()));';
-    $Layer .= '  }';
-
-    }
-    else if( $a_msgBox == 'metabox_marker_sc_gen'){
-    $Layer .= ' 
-      MarkerField = "";
-      ThemeField  = "";
+      MarkerId = "";
+      BorderField  = "";
       MapTypeField = "";
-
-      MarkerName = document.post.osm_marker_marker.value;
+      Controls = "";
 
       if (document.post.osm_marker_map_type.value != "Mapnik"){
         MapTypeField = " type=\"" + document.post.osm_marker_map_type.value + "\""; 
       }
 
-      if (document.post.osm_marker_marker.value != "none"){
-        MarkerField = " marker_latlon=\""+Clicklonlat.lat+","+Clicklonlat.lon+"\" marker_name=\"" + MarkerName + "\"";  
+      if (document.post.osm_marker_id.value != "none"){
+        MarkerId = " post_markers=\"" + document.post.osm_marker_id.value + "\"";  
       }
-      if (document.post.osm_marker_theme.value == "dark"){
-        ThemeField = " map_border=\"thin solid grey\"";
-      }
-      else if (document.post.osm_marker_theme.value == "blue"){
-        ThemeField = " map_border=\"thin solid blue\"";  
-      }
-      else if (document.post.osm_marker_theme.value == "orange"){
-        ThemeField = " map_border=\"thin solid orange\"";
-      }
+      if (document.post.osm_marker_border.value != "none"){
+        BorderField = " map_border=\"thin solid "  + document.post.osm_marker_border.value+ "\"";
+     }
+  
+    if (document.post.fullscreen.checked){
+        Controls = "fullscreen,";
+    }
 
-      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + ThemeField + MarkerField + MapTypeField + "]"; 
+    if (document.post.scaleline.checked){
+        Controls = Controls + "scaleline,";
+    }
+    if (document.post.mouseposition.checked){
+        Controls = Controls + "mouseposition,";
+    }
+    if (Controls != ""){
+      Controls = Controls.substr(0, Controls.length-1);
+      ControlField = " control=\"" + Controls + "\"";
+    }
+    else {
+      ControlField ="";
+    }
+      GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + BorderField + MarkerId + MapTypeField + ControlField +"]"; 
 
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
     ';
+}
+    else if( $a_msgBox == 'metabox_add_marker_sc_gen'){
+    $Layer .= ' 
+      MarkerNameField = "";
+      MarkerTextField ="";
+
+      MarkerIcon = document.post.osm_add_marker_icon.value;
+      MarkerName = document.post.osm_add_marker_name.value;
+      MarkerTextField = document.post.osm_add_marker_text.value;
+      MarkerTextField = MarkerTextField.replace(/(\r\n|\n|\r)/gm, "");
+      MarkerTextField = MarkerTextField.replace(/(\')/gm, "&apos;");
+      
+      osm_ajax_object.MarkerLat = Clicklonlat.lat;
+      osm_ajax_object.MarkerLon = Clicklonlat.lon;
+      osm_ajax_object.MarkerName = MarkerName;
+      osm_ajax_object.MarkerText = MarkerTextField;
+      osm_ajax_object.MarkerIcon = MarkerIcon;
+      osm_ajax_object.post_id = '.$a_post_id.';
+
+      GenTxt = "<br> Marker_Id: 01" + "<br>Marker_Name: " + MarkerName + "<br>Marker_LatLon: "+Clicklonlat.lat+","+Clicklonlat.lon+ " <br>Icon: " + MarkerIcon + "<br>  Marker_Text:<br>"+ MarkerTextField + "<br><b>4. Press [Save] to store marker!</b>";
+
+      div = document.getElementById("Marker_Div");
+      div.innerHTML = GenTxt;
+      div02 = document.getElementById("ShortCode_Div");
+      div02.innerHTML = "";
+    ';
     $Layer .= ' 
       markerslayer.clearMarkers();
-      if (document.post.osm_marker_marker.value != "none"){
-        var icon_Obj = osm_getIconSize(MarkerName);
+        var icon_Obj = osm_getIconSize(MarkerIcon);
         var icon_size = new OpenLayers.Size(icon_Obj.width,icon_Obj.height);
         var icon_offset = new OpenLayers.Pixel(icon_Obj.offset_width, icon_Obj.offset_height);
-        var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerName;
+        var icon_url = "'.OSM_PLUGIN_ICONS_URL.'" + MarkerIcon;
         var click_icon = new OpenLayers.Icon(icon_url,icon_size,icon_offset); 
         var icon_lonlat = new OpenLayers.LonLat(Clicklonlat.lon,Clicklonlat.lat).transform('.$a_MapName.'.displayProjection, '.$a_MapName.'.projection);
         markerslayer.addMarker(new OpenLayers.Marker(icon_lonlat,click_icon.clone()));
-      }';
+    ';
     }
     else if( $a_msgBox == 'metabox_file_list_sc_gen'){
     $Layer .= ' 
@@ -555,6 +485,7 @@ class Osm_OpenLayers
       var FileList_TypeField   = "";
       var FileList_MapTypeField = "";
       var FileList_FileField = "";
+      var DisplayName = "";
 	  var FileList_FileUrl = document.post.osm_file_list_URL.value;
 	  
 	  if (document.post.osm_file_list_map_type.value != "Mapnik"){
@@ -564,10 +495,12 @@ class Osm_OpenLayers
 	  if (document.post.osm_file_list_color.value != "none"){
         FileList_ColorField = " file_color_list=\"" + document.post.osm_file_list_color.value + "\""; 
       }
-	  
+  
 	  FileList_FileField = " file_list=\""+ FileList_FileUrl + "\"";
-	   
-	  GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + FileList_FileField + FileList_MapTypeField + FileList_ColorField + "]";
+
+
+       
+	  GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + FileList_FileField + FileList_MapTypeField + FileList_ColorField + DisplayName + "]";
 
       div = document.getElementById("ShortCode_Div");
       div.innerHTML = GenTxt;
@@ -669,14 +602,9 @@ class Osm_OpenLayers
       }
 
       PostTypeField = " tagged_type=\""+document.post.osm_geotag_posttype.value+"\"";
-
-
       if (document.post.osm_geotag_marker.value != "none"){
         MarkerField = " marker_name=\"" + MarkerName + "\"";  
       }
-
-       
-
       GenTxt = "[osm_map_v3 map_center=\"" + Centerlonlat.lat + "," + Centerlonlat.lon + "\" zoom=\"" + zoom + "\" width=\"100%\" height=\"450\" " + PostTypeField + MarkerField + MapTypeField + CatFilterField + "]"; 
 
       div = document.getElementById("ShortCode_Div");
@@ -749,6 +677,8 @@ class Osm_OpenLayers
       }
       div = document.getElementById("Geotag_Div");
       div.innerHTML = GenTxt;
+      div02 = document.getElementById("ShortCode_Div");
+      div02.innerHTML = "";
     ';
     $Layer .= ' 
       markerslayer.clearMarkers();

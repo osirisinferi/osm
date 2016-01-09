@@ -18,7 +18,6 @@
 
 class cOsm_arguments
 {
-  
     private  $width_str = '100%'; 
     private  $height_str = '300';
     private  $map_Lat = '58.213';
@@ -31,7 +30,6 @@ class cOsm_arguments
     private  $marker_latlon = 'No';
     private  $map_border = '2px solid grey';
     private  $marker_name = 'NoName';
-    private  $marker_size = 'no';
     private  $mapControl_array = '';
     private  $wms_type = 'wms_type';
     private  $wms_address = 'wms_address';
@@ -41,6 +39,30 @@ class cOsm_arguments
     private  $tagged_type = 'no';
     private  $tagged_filter = 'osm_all';
     private  $mwz = 'false';
+    private  $marker_height = '32';
+    private  $marker_width = '32';
+    private  $marker_focus = '0';
+    private $post_markers = 'no';
+    private $cntrl_fullscreen = 0;
+    private $cntrl_mouseposition = 0;
+    private $cntrl_scaleline = 0;      
+    private $show_kml_marker_name  = "false";
+    
+   private function setMarkersize($a_marker_size){
+      if ($a_marker_size == "no"){
+      }
+      else{
+        $marker_size_array = explode(',', $a_marker_size);
+        if(count($marker_size_array) == 3) {
+          $marker_height = $marker_size_array[0];
+          $marker_width = $marker_size_array[1];
+          $marker_focus = $marker_size_array[2];
+        }
+        else{
+          Osm::traceText(DEBUG_ERROR, "marker_size error!");
+        }
+      }
+    }
 
    private function setLatLon($a_map_center){
 
@@ -92,36 +114,56 @@ private function setMapSize($a_width,  $a_height){
   private function setControlArray($a_MapControl){
     $mapControl_array = explode( ',',$a_MapControl);
     foreach ($mapControl_array as $MapControl ){
-	  Osm::traceText(DEBUG_INFO, "Checking the Map Control for OL3");
 	  $MapControl = strtolower($MapControl);
-
-	  if (( $MapControl != 'control') && ($MapControl != 'fullscreen') && ($MapControl != 'mouseposition')&& ($MapControl != 'rotate')&& ($MapControl != 'scaleline')&& ($MapControl != 'zoom')&& ($MapControl != 'zoomslider')&& ($MapControl != 'zoomtoextent') && ($MapControl != 'no') && ($MapControl != 'mouseposition') && ($MapControl != 'off')) {
-	    Osm::traceText(DEBUG_ERROR, "e_invalid_control");
-	    $this->mapControl_array[0]='no';
+	  if ($MapControl == 'fullscreen'){
+          $this->cntrl_fullscreen = true;
      }
-     else {
-        if (($MapControl != 'off') && ($MapControl != 'no')){
-       // up to now only fullscreen is supported.
-         $this->mapControl_array[0] = 'fullscreen';
-       }
+     else if($MapControl == 'mouseposition'){
+       $this->cntrl_mouseposition = true;
      }
+    else if($MapControl == 'scaleline'){
+      $this->cntrl_scaleline = true;
     }
-    return $this->mapControl_array;
+}
+  return $this->mapControl_array;
+}
+
+private function setPostMarkers($a_post_markers){
+    if ($a_post_markers == "1"){
+      $this->post_markers = $a_post_markers;
+   }
+    else {
+      $this->post_markers = 'no';  
+   }
 }
 
 private function setMapType($a_type){
     $this->map_type = strtolower($a_type);
-    }
+}
+
+private function setDisplayMarker($a_display_marker_name){
+    if ($a_display_marker_name == "kml"){
+      $this->show_kml_marker_name = "true";
+   }
+}
+
 
   function __construct($a_width,  $a_height, $a_map_center,  $zoom,  $file_list, $file_color_list, $a_type, $jsname, $marker_latlon, $map_border, 
-    $marker_name, $marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name,  $wms_attr_url, 
-    $tagged_type, $tagged_filter, $mwz){
+    $marker_name, $a_marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name,  $wms_type, $wms_attr_url, 
+    $tagged_type, $tagged_filter, $mwz, $a_post_markers, $a_display_marker_name){
+        
     $this->setLatLon($a_map_center) ;
     $this->setMapSize($a_width,  $a_height);
     $this->setControlArray($control);
     $this->setMapType($a_type);
+    $this->setMarkersize($a_marker_size);
+    $this->setPostMarkers($a_post_markers);
+    $this->setDisplayMarker($a_display_marker_name);
 }
 
+public function getPostMarkers(){
+    return $this->post_markers;
+}
 
 public function getMapCenterLat(){
   return $this->map_Lat;
@@ -141,6 +183,29 @@ public function getMapControl(){
 }
 public function getMapType(){
   return $this->map_type;  
+}
+public function getMarkerHeight(){
+  return $this->marker_height;  
+}
+public function getMarkerWidth(){
+  return $this->marker_width;  
+}
+public function getMarkerFocus(){
+  return $this->marker_focus;  
+}
+
+public function issetFullScreen(){
+    return $this->cntrl_fullscreen;
+}
+public function issetMouseposition(){
+    return $this->cntrl_mouseposition;
+}
+public function issetScaleline(){
+    return $this->cntrl_scaleline;
+}
+
+public function showKmlMarkerName(){
+    return $this->show_kml_marker_name;  
 }
 
 }

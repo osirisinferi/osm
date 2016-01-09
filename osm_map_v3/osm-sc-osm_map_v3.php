@@ -19,7 +19,7 @@
     // size of the map
     'width'      => '100%', 
     'height'     => '300',
-    'map_center' => '58.213, 6.378',
+    'map_center' => OSM_default_lat.','.OSM_default_lon,
     'zoom'       => '4',
     'file_list'  => 'NoFile',
     'file_color_list'  => 'NoColor',
@@ -29,6 +29,7 @@
     'map_border'  => '2px solid grey',
     'marker_name' => 'NoName',
     'marker_size' => 'no',
+    'post_markers' => 'no',
     'control' => 'No',
     'wms_type' => 'wms_type',
     'wms_address' => 'wms_address',
@@ -37,56 +38,54 @@
     'wms_attr_url' => 'wms_attr_url',
     'tagged_type' => 'no',
     'tagged_filter' => 'osm_all',
-    'mwz' => 'false'
+    'mwz' => 'false',
+    'debug_trc' => 'false',
+    'display_marker_name' => 'false'
     ), $atts));
 
-
-    $sc_args = new cOsm_arguments($width,  $height,  $map_center,  $zoom,  $file_list,  $file_color_list, $type, $jsname, $marker_latlon, $map_border, $marker_name, $marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name, $wms_type, $wms_attr_url, $tagged_type, $tagged_filter, $mwz); 
+    $sc_args = new cOsm_arguments($width,  $height,  $map_center,  $zoom,  $file_list,  $file_color_list, $type, $jsname, $marker_latlon, $map_border, $marker_name, $marker_size, $control, $wms_type, $wms_address, $wms_param, $wms_attr_name, $wms_type, $wms_attr_url, $tagged_type, $tagged_filter, $mwz,$post_markers, $display_marker_name); 
+ 
     $lat = $sc_args->getMapCenterLat();
     $lon = $sc_args->getMapCenterLon();
     $array_control = $sc_args->getMapControl();
     $width_str = $sc_args->getMapWidth_str();
     $height_str = $sc_args->getMapHeight_str();
     $type =  $sc_args->getMapType();
+    $postmarkers = $sc_args->getPostMarkers();
+
+    if ($debug_trc == "true"){
+      echo "WP version: ".get_bloginfo(version)."<br>";
+      echo "OSM Plugin Version: ".PLUGIN_VER."<br>";
+      echo "Plugin URL: ".OSM_PLUGIN_URL."<br>";
+      print_r($atts);
+      echo "<br>";
+      print_r($sc_args);
+      echo "<br><br>";
+    }
 
 if (($mwz != "true") && ($mwz != "false")){
         $mwz = "false";
         Osm::traceText(DEBUG_ERROR, "Error at argument mwz (true|false)!");
     }
 
-    
-
+    // if the markersize is set, we expect a private marker
     if ($marker_size == "no"){
       $default_icon = new cOsm_icon($marker_name); 
     }
     else{
-      $marker_size_array = explode(',', $marker_size);
-      if(count($marker_size_array) == 3) {
-        $marker_height = $marker_size_array[0];
-        $marker_width = $marker_size_array[1];
-        $marker_focus = $marker_size_array[2];
-        $default_icon = new cOsm_icon($marker_name, $marker_height, $marker_width, $marker_focus);
-      }
-      else{
-        Osm::traceText(DEBUG_ERROR, "marker_size error!");
-        $default_icon = new cOsm_icon("mic_blue_pinother_02.png");
-      }
-       
+      $default_icon = new cOsm_icon($marker_name, $sc_args->getMarkerHeight(), $sc_args->getMarkerWidth(), $sc_args->getMarkerFocus());
     }
+       
     $MapCounter += 1;
     $MapName = 'map_ol3js_'.$MapCounter;
 
     $output = '
-    <div class="row-fluid">
-      <div class="span12">
-        <div id="'.$MapName.'" class="OSM_Map" style="width:'.$width_str.'; height:'.$height_str.'; overflow:hidden;border:'.$map_border.';">
+        <div id="'.$MapName.'" class="OSM_Map_v3" style="width:'.$width_str.'; height:'.$height_str.'; overflow:hidden;border:'.$map_border.';">
           <div id="'.$MapName.'_popup" class="ol-popup" >
             <a href="#" id="'.$MapName.'_popup-closer" class="ol-popup-closer"></a>
             <div id="'.$MapName.'_popup-content"></div>
           </div>
         </div>
-      </div>
-    </div>
     ';
     
     if(!defined('OL3_LIBS_LOADED')) {
@@ -169,6 +168,10 @@ $output .= '
           $temp = explode(".",$FileListArray[$x]);
 	      $FileType = strtolower($temp[(count($temp)-1)]);
 	      if (($FileType == "gpx")||($FileType == "kml")){
+            $showMarkerName = "false";
+            if ($FileType == "kml"){
+              $showMarkerName = $sc_args->showKmlMarkerName();
+            }
 	        if (sizeof($FileColorListArray) == 0){$Color = "blue";}
 	        else {$Color = $FileColorListArray[$x];}
 	        $gpx_marker_name = "mic_blue_pinother_02.png";
@@ -176,7 +179,7 @@ $output .= '
             else if ($Color == "red"){$gpx_marker_name = "mic_red_pinother_02.png";}
             else if ($Color == "green"){$gpx_marker_name = "mic_green_pinother_02.png";}
             else if ($Color == "black"){$gpx_marker_name = "mic_black_pinother_02.png";}
-            $output .= Osm_OLJS3::addVectorLayer($MapName, $FileListArray[$x], $Color, $FileType, $x, $gpx_marker_name);
+            $output .= Osm_OLJS3::addVectorLayer($MapName, $FileListArray[$x], $Color, $FileType, $x, $gpx_marker_name, $showMarkerName);
           }
           else {
             Osm::traceText(DEBUG_ERROR, "e_gpx_type_error");
@@ -185,8 +188,6 @@ $output .= '
         //$output .= 'osm_addPopupClickhandler('.$MapName.',  "'.$MapName.'"); ';
 	  }
     } // $file_list != "NoFile"
-        echo "<br>";
-
   if (($tagged_type == "post") || ($tagged_type == "page") || ($tagged_type == "any")){
     $tagged_icon = new cOsm_icon($default_icon->getIconName());
     
@@ -263,7 +264,7 @@ $output .= '
         
       $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
         //$output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.') ; ';
-        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$postgeotag_icon->getIconURL().'",'.$postgeotag_icon->getIconOffsetwidth().','.$postgeotag_icon->getIconOffsetheight().') ; ';
+        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$postgeotag_icon->getIconURL().'",'.$postgeotag_icon->getIconOffsetwidth().','.$postgeotag_icon->getIconOffsetheight().',"") ; ';
       }// templat lon != 0
     } //($marker_latlon  == 'OSM_geotag')
     else if (strtolower($marker_latlon) != 'no'){
@@ -278,10 +279,68 @@ $output .= '
         $lat_marker = $temp_lat;
         $lon_marker = $temp_lon;
         $MarkerArray[] = array('lat'=> $temp_lat,'lon'=>$temp_lon,'text'=>$temp_popup,'popup_height'=>'150', 'popup_width'=>'150');
-        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$default_icon->getIconURL().'",'.$default_icon->getIconOffsetwidth().','.$default_icon->getIconOffsetheight().') ; ';
+        $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$default_icon->getIconURL().'",'.$default_icon->getIconOffsetwidth().','.$default_icon->getIconOffsetheight().',"") ; ';
       }// templat lon != 0
 
 }
+
+// add post markers
+if (strtolower($postmarkers) != 'no'){ 
+      global $post;
+      $metapostLatLon = get_post_meta($post->ID, 'OSM_Marker_01_LatLon', true);  
+      $metapostIcon_name = get_post_meta($post->ID, 'OSM_Marker_01_Icon', true);
+      $metapostmarker_name = get_post_meta($post->ID, 'OSM_Marker_01_Name', true);
+      $metapostmarker_text = get_post_meta($post->ID, 'OSM_Marker_01_Text', true);
+
+       if ($metapostIcon_name == ""){
+           Osm::traceText(DEBUG_ERROR, __('You have to add a marker to the post at [Add marker] tab!','OSM-plugin'));
+       }
+       $postmarker_icon = new cOsm_icon($metapostIcon_name); 
+
+
+     // check lat lon
+      $metapostLatLon = preg_replace('/\s*,\s*/', ',',$metapostLatLon);
+      // get pairs of coordination
+      $GeoData_Array = explode( ' ', $metapostLatLon );
+      list($temp_lat, $temp_lon) = explode(',', $GeoData_Array[0]); 
+      $DoPopUp = 'false';
+
+      list($temp_lat, $temp_lon) = Osm::checkLatLongRange('Marker',$temp_lat, $temp_lon,'no');
+      if (($temp_lat != 0) || ($temp_lon != 0)){
+      $output .= 'osm_addMarkerLayer('.$MapName.','.$temp_lon.','.$temp_lat.',"'.$postmarker_icon->getIconURL().'",'.$postmarker_icon->getIconOffsetwidth().','.$postmarker_icon->getIconOffsetheight().',"'.$metapostmarker_text.'") ; ';
+      }// templat lon != 0
+    } //($postmarkers) != 'no'')
+          $output.= '
+            var osm_controls = [
+                new ol.control.Attribution(),
+                new ol.control.MousePosition({
+                    undefinedHTML: "outside",
+                    projection: "EPSG:4326",
+                    coordinateFormat: function(coordinate) {
+                        return ol.coordinate.format(coordinate, "{x}, {y}", 4);
+                    }
+                }),
+                new ol.control.OverviewMap({
+                    collapsed: false
+                }),
+                new ol.control.Rotate({
+                    autoHide: false
+                }),
+                new ol.control.ScaleLine(),
+                new ol.control.Zoom(),
+                new ol.control.ZoomSlider(),
+                new ol.control.ZoomToExtent(),
+                new ol.control.FullScreen()
+            ]; ';
+            if ($sc_args->issetFullScreen()){
+              $output .= $MapName.'.addControl(osm_controls[8]);';
+            }
+            if ($sc_args->issetScaleline()){
+              $output .= $MapName.'.addControl(osm_controls[4]);';
+            }
+            if ($sc_args->issetMouseposition()){
+              $output .= $MapName.'.addControl(osm_controls[1]);';
+            }           
     $output .= 'osm_addPopupClickhandler('.$MapName.',  "'.$MapName.'"); ';
     $output .= '})(jQuery)';
     $output .= '/* ]]> */';

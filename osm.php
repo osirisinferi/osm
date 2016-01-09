@@ -9,7 +9,7 @@ Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 3.0
 */
 
-/*  (c) Copyright 2015  Michael Kang
+/*  (c) Copyright 2016  Michael Kang
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 3.0
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.5.5");
+define ("PLUGIN_VER", "V3.6");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -133,7 +133,7 @@ function saveGeotagAndPic(){
     echo "Error: Bad ajax request";
   }
   else {
-    echo "Saved geotag!";
+    _e('Geotag saved, you can use it at [Map & geotags]!','OSM-plugin');
     $CustomField =  get_option('osm_custom_field','OSM_geo_data');
     delete_post_meta($post_id, $CustomField);
     delete_post_meta($post_id, "OSM_geo_icon");
@@ -144,6 +144,32 @@ function saveGeotagAndPic(){
   }
   wp_die();
 }
+
+function savePostMarker(){
+  $MarkerLatLon  = $_POST['MarkerLat'].','.$_POST['MarkerLon'];
+  $MarkerIcon      = $_POST['MarkerIcon'];
+  $MarkerName   = $_POST['MarkerName'];
+  $MarkerText      = $_POST['MarkerText'];
+  $post_id = $_POST['post_id'];
+  $nonce   = $_POST['marker_nonce'];
+
+  if (!wp_verify_nonce($nonce, 'osm_marker_nonce')){
+    echo "Error: Bad ajax request";
+  }
+  else {
+    delete_post_meta($post_id, "OSM_Marker_01_Name");
+    delete_post_meta($post_id, "OSM_Marker_01_LatLon");
+    delete_post_meta($post_id, "OSM_Marker_01_Icon");
+    delete_post_meta($post_id, "OSM_Marker_01_Text");
+    add_post_meta($post_id, "OSM_Marker_01_Name", $MarkerName, true );
+    add_post_meta($post_id, "OSM_Marker_01_LatLon", $MarkerLatLon, true );
+    add_post_meta($post_id, "OSM_Marker_01_Icon", $MarkerIcon, true );
+    add_post_meta($post_id, "OSM_Marker_01_Text", $MarkerText, true );
+    _e('Marker saved, you can use it at [Map & Marker]!','OSM-plugin');
+  }
+  wp_die();
+}
+
 
 // If the function exists this file is called as post-upload-ui.
 // We don't do anything then.
@@ -168,9 +194,9 @@ if (OSM_enable_Ajax){
 }
 include('osm-args-class.php');
 include('osm-metabox.php');
-include('osm-oljs2.php');
-include('osm-oljs3.php');
-include('osm-icon.php');
+include('osm_map/osm-oljs2.php');
+include('osm_map_v3/osm-oljs3.php');
+include('osm_map/osm-icon.php');
 include('osm-icon-class.php');
     	
 // let's be unique ... 
@@ -190,6 +216,7 @@ class Osm
     add_action('wp_print_scripts',array(&$this, 'show_enqueue_script'));
     add_action('widgets_init', 'register_osm_widget' );
     add_action('wp_ajax_act_saveGeotag', 'saveGeotagAndPic');
+    add_action('wp_ajax_act_saveMarker', 'savePostMarker');
 
     // add the WP shortcode
     add_shortcode('osm_map',array(&$this, 'sc_showMap'));
@@ -690,13 +717,13 @@ else{
   // shortcode for map with OpenLayers 3
   function sc_OL3JS($atts) {    
     static  $MapCounter = 0;
-    include('osm-sc-ol3js.php');	
+    include('osm_map_v3/osm-sc-osm_map_v3.php');	
     return $output;
   }
   // shortcode for map with OpenLayers 2
   public static function sc_showMap($atts) {
     static  $MapCounter = 0;
-    include('osm-sc-osm_map.php');
+    include('osm_map/osm-sc-osm_map.php');
     return $output;
   }
 

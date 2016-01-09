@@ -118,7 +118,7 @@ class Osm_OLJS3
                }),
                ol.source.OSM.ATTRIBUTION
                ],
-               url: "http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+               url: "'.Osm_OpenCycle_Tiles.'"
              })
            });
           ';
@@ -134,7 +134,7 @@ class Osm_OLJS3
                }),
                ol.source.OSM.ATTRIBUTION
                ],
-               url: "http://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png"
+               url: "'.Osm_thunderforest_Outdoor_Tiles.'"
              })
            });
           ';
@@ -150,7 +150,8 @@ class Osm_OLJS3
                }),
                ol.source.OSM.ATTRIBUTION
                ],
-               url: "http://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png"
+          
+          url: "'.Osm_thunderforest_Landscape_Tiles.'"
              })
            });
           ';
@@ -166,7 +167,7 @@ class Osm_OLJS3
                }),
                ol.source.OSM.ATTRIBUTION
                ],
-               url: "http://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png"
+               url: "'.Osm_thunderforest_Spinal_Tiles.'"
              })
            });
           ';
@@ -182,7 +183,7 @@ class Osm_OLJS3
                }),
                ol.source.OSM.ATTRIBUTION
                ],
-               url: "http://{a-c}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png"
+               url: "'.Osm_thunderforest_Pioneer_Tiles.'"
              })
            });
           ';
@@ -274,7 +275,7 @@ class Osm_OLJS3
         var raster = new ol.layer.Tile({
           source: new ol.source.OSM()
         });';
-}
+     }
       if (!empty($a_MapControl)){
         $FirstString = $a_MapControl[0];
         if ((strtolower($FirstString)== 'fullscreen')) {
@@ -290,12 +291,11 @@ class Osm_OLJS3
       var Controls = ol.control.defaults({ attribution: false }).extend([
           attribution
       ]); ';
-    }
-
+}
       return $TileLayer;
   }
 
-  public static function addVectorLayer($a_MapName, $a_FileName, $a_Colour, $a_Type, $a_Counter, $a_MarkerName)
+  public static function addVectorLayer($a_MapName, $a_FileName, $a_Colour, $a_Type, $a_Counter, $a_MarkerName, $a_showMarkerName)
   {
     Osm::traceText(DEBUG_INFO, "addVectorLayer V3(".$a_MapName.",".$a_Type.",".$a_FileName.")");
     $VectorLayer = '';
@@ -339,13 +339,14 @@ class Osm_OLJS3
         style: function(feature, resolution) {return style'.$a_Counter.'[feature.getGeometry().getType()];}
       });
       ';
-    }
+}
+
     if ($a_Type == 'kml'){
       $VectorLayer .= '
       var vectorL = new ol.layer.Vector({
         source: new ol.source.Vector({
 	  url:"'.$a_FileName.'",
-          format: new ol.format.KML()
+          format: new ol.format.KML({ showPointNames: '.$a_showMarkerName.'})
         })
       });';
     }
