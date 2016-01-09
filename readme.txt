@@ -11,7 +11,7 @@ Customize maps in your post, pages and widgets. Add geotag to your blog and site
 If you want to get detailed information about the OSM-plugin visit these pages:
 
 * Homepage: [WP-OSM-Plugin](http://wp-osm-plugin.hanblog.net/ "OSM-plugin")
-* Forum: [EN|DE](http://http://wp-osm-plugin.hanblog.net/forums/ "OSM-plugin forum EN|DE")
+* Forum: [EN|DE](http://wp-osm-plugin.hanblog.net/forums/ "OSM-plugin forum EN|DE")
 * Twitter: [@WP_OSM_Plugin](https://twitter.com/wp_osm_plugin "@WP_OSM_Plugin")
 * FacebooK: [HanBlog Net](https://de-de.facebook.com/people/HanBlog-Net/100010432170169 "HanBlog")
 
