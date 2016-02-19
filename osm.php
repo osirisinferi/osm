@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 3.0
 */
 load_plugin_textdomain('OSM-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.6.2");
+define ("PLUGIN_VER", "V3.7");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
