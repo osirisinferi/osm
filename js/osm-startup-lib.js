@@ -134,6 +134,7 @@ function switchLayerOff(_e) {
 	_e.data('active', false);
 	_e.children('i').removeClass('fa-eye'); 
 	_e.children('i').addClass('fa-eye-slash'); 
+	_e.children('span.layerColor').addClass('layerColorHidden'); 
 	
 	/** window and vectorM are both global */
 	window[_e.data('map')].removeLayer(vectorM[_e.data('map')][_e.data('layer')]);
@@ -152,6 +153,7 @@ function switchLayerOn(_e) {
 	_e.data('active', true);
 	_e.children('i').removeClass('fa-eye-slash'); 
 	_e.children('i').addClass('fa-eye'); 
+	_e.children('span.layerColor').removeClass('layerColorHidden'); 
 	
 	/** window and vectorM are both global */
 	window[_e.data('map')].addLayer(vectorM[_e.data('map')][_e.data('layer')]);
@@ -217,6 +219,11 @@ jQuery(document).ready(function() {
 	
 		/** reads from clicked anchor tag data attributes: center - get from global: map */
 		mapCenter = jQuery(this).data('center').split(',');
+
+		/** this is the difference between OL 3.0 and 4.0 **/
+		mapCenter[0] = parseFloat(mapCenter[0]);
+		mapCenter[1] = parseFloat(mapCenter[1]);
+
 		window[controlledMap].getView().setCenter(mapCenter);
 	
 		/** layers	- via class addressed seams not to be the same as via id ... */

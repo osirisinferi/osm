@@ -212,7 +212,7 @@
 			        
 					
 					if (!empty($FileColorListArray[$key])) {
-						$output .= '<span class="layerColor" style="background-color:'  . $FileColorListArray[$key] . '"></span>';
+						$output .= '<span class="layerColor layerColorHidden" style="background-color:'  . $FileColorListArray[$key] . '"></span>';
 					}
 					
 					$output .= '<span class="padding1em">' . trim($val) . '</span></span>';
@@ -341,12 +341,16 @@
 					}
 					if (sizeof($FileColorListArray) == 0){$Color = "blue";}
 					else {$Color = $FileColorListArray[$x];}
+
+                                        if (sizeof($FileTitleArray) == 0){$FileTitle = 0;}
+					else {$FileTitle = $FileTitleArray[$x];}
+
 					$gpx_marker_name = "mic_blue_pinother_02.png";
 					if ($Color == "blue"){$gpx_marker_name = "mic_blue_pinother_02.png";}
 					else if ($Color == "red"){$gpx_marker_name = "mic_red_pinother_02.png";}
 					else if ($Color == "green"){$gpx_marker_name = "mic_green_pinother_02.png";}
 					else if ($Color == "black"){$gpx_marker_name = "mic_black_pinother_02.png";}
-					$output .= Osm_OLJS3::addVectorLayer($MapName, $FileListArray[$x], $Color, $FileType, $x, $gpx_marker_name, $showMarkerName, $FileTitleArray[$x]);
+					$output .= Osm_OLJS3::addVectorLayer($MapName, $FileListArray[$x], $Color, $FileType, $x, $gpx_marker_name, $showMarkerName, $FileTitle);
 				  }
 				  else {        
 					 Osm::traceText(DEBUG_ERROR, (sprintf(__('%s hast got wrong file extension (gpx, kml)!'), $FileName)));
