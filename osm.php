@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 3.9.1
+Version: 3.9.2
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 3.0
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 3.0
 */
 load_plugin_textdomain('OSM', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.9.1");
+define ("PLUGIN_VER", "V3.9.2");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -355,7 +355,7 @@ class Osm
     return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
   }
  
-  function getPostMarkerCFN($a_Number, $a_FieldName) {
+  static function getPostMarkerCFN($a_Number, $a_FieldName) {
     $CustomFieldName = "OSM_Marker_0".$a_Number."_".$a_FieldName;
     return $CustomFieldName;
   }

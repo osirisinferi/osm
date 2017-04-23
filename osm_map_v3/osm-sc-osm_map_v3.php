@@ -250,7 +250,7 @@
 				}	
 			}
  
-			/** logged in users will see one of these links */
+			/** logged in users will see one of these links <== ToDo with Version 4.0
  			if ( is_admin_bar_showing() ) {
 				
 				if ($setup_map_name == 'undefined') {
@@ -261,7 +261,7 @@
 					$output .= '<div class="generatedShortCode"><a class="shortCodeGeneration generatedShortCode" data-map="' . $MapName . '" data-map_name="' . $setup_map_name . '">' . __('get shotcut to this map with choosen layers', 'OSM') . '</a></div>';
 				}
 			}
-			
+			*/
 			$output .= '<script type="text/javascript">'; 
 			
 			

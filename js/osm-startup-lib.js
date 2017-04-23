@@ -83,6 +83,7 @@ function activateLayers(_map, _layers, _startUp) {
 		/** visibility and fancy looking */
 		jQuery('#layerBox' + e + _map).children('i').removeClass('fa-eye-slash'); 
 		jQuery('#layerBox' + e + _map).children('i').addClass('fa-eye'); 
+	    jQuery('#layerBox' + e + _map).children('span.layerColor').removeClass('layerColorHidden'); 
 		jQuery('#layerBox' + e + _map).css({'background-color':'rgb(250,255,255)' });
 		jQuery('#layerBox' + e + _map).data('active', true);
 		
@@ -287,6 +288,8 @@ jQuery(document).ready(function() {
 	
 		/** mapCenter is an array of 2 values longitude, latitude (different format as long, lat in the entire plugin) */
 		mapCenter = getGET('mapCenter[' + getGET('map') + ']').split(',');
+		mapCenter[0] = parseFloat(mapCenter[0]);
+		mapCenter[1] = parseFloat(mapCenter[1]);
 		
 		/** link between map_name and map id on page, because id is not map specific enough on different content positions */
 		controlledMap = jQuery('*[data-map_name="' + getGET('map') + '"]').data('map');
