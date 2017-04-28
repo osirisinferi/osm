@@ -178,9 +178,9 @@
 			  ';
 			}
 	
-			$FileColorListArray = [];
-			$FileLinkArray = [];
-			$FileTitleArray = []; 
+			$FileColorListArray = array();
+			$FileLinkArray = array();
+			$FileTitleArray = array(); 
 	
 			if ($file_color_list != 'NoColor') {
 				$FileColorListArray = explode(',', $file_color_list);
