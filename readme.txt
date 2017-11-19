@@ -1,6 +1,6 @@
 ﻿=== OSM - OpenStreetMap ===
 Contributors: MiKa
-Tags: map, OpenStreetMap, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, fullscreen, OpenSeaMap, stamen, basemap, exif, meta, widget, thunderforest
+Tags: map, OpenStreetMap, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, fullscreen, OpenSeaMap, stamen, basemap, meta, widget, thunderforest
 Requires at least: 3.0
 Tested up to: 4.9
 Stable tag: 3.9.4
