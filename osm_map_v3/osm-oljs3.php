@@ -99,7 +99,7 @@ class Osm_OLJS3
               attributions: [
                new ol.Attribution({
                 html: "All maps &copy; " +
-                 "<a href=\"http://www.opencyclemap.org/\">OpenCycleMap</a>"
+                 "<a href=\"http://www.opencyclemap.org/\">OpenCycleMap</a> <a href=\"http://www.HanBlog.Net\">WP OSM Plugin</a>"
                }),
                ol.source.OSM.ATTRIBUTION
                ],  
@@ -115,7 +115,7 @@ class Osm_OLJS3
               attributions: [
                new ol.Attribution({
                  html: "Maps &copy; " +
-                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a> <a href=\"http://www.HanBlog.Net\">WP OSM Plugin</a>"
                }),
                ol.source.OSM.ATTRIBUTION
                ],
@@ -131,7 +131,7 @@ class Osm_OLJS3
               attributions: [
                new ol.Attribution({
                  html: "Maps &copy; " +
-                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a> <a href=\"http://www.HanBlog.Net\">WP OSM Plugin</a>"
                }),
                ol.source.OSM.ATTRIBUTION
                ],
@@ -148,7 +148,7 @@ class Osm_OLJS3
               attributions: [
                new ol.Attribution({
                  html: "Maps &copy; " +
-                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a> <a href=\"http://www.HanBlog.Net\">WP OSM Plugin</a>"
                }),
                ol.source.OSM.ATTRIBUTION
                ],
@@ -164,7 +164,7 @@ class Osm_OLJS3
               attributions: [
                new ol.Attribution({
                  html: "Maps &copy; " +
-                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data</a>"
+                 "<a href=\"http://www.thunderforest.com/\">Thunderforest, Data.</a> <a href=\"http://www.HanBlog.Net\">WP OSM Plugin</a>"
                }),
                ol.source.OSM.ATTRIBUTION
                ],

@@ -51,8 +51,9 @@
     'setup_layer' => 'undefined',
     'setup_center' => 'undefined',
     'setup_trigger' => 'undefined',
-    'setup_map_name' => 'undefined'
-    
+    'setup_map_name' => 'undefined',
+    'map_event' => 'no',
+		'file_select_box' => 'no'
     ), $atts));
 
 
@@ -68,6 +69,7 @@
 				$jsname,
 				$marker_latlon,
 				$map_border,
+				$map_event,
 				$marker_name,
 				$marker_size,
 				$control,
@@ -88,7 +90,8 @@
 				$setup_layer,
 				$setup_center,
 				$setup_trigger,
-				$setup_map_name
+				$setup_map_name,
+				$file_select_box
 				); 
       
  	$dontShow = array('&#8243;','&#8220;');
@@ -116,6 +119,7 @@
       echo "<br><br>";
     }
     
+	global $post;
     
     /** if not all 5 parameters are correctly set, a map instead of the text link will be shown */
     if (($setup_zoom != 'undefined') && 
@@ -159,11 +163,13 @@
 			  $output .= '
 				<link rel="stylesheet" href="' . Osm_OL_3_CSS . '" type="text/css"> 
 				<link rel="stylesheet" href="' . Osm_OL_3_Ext_CSS . '" type="text/css"> 
+				<link rel="stylesheet" href="' . Osm_map_CSS. '" type="text/css">
 				<!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
 				<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
 				
 				<script src="' . Osm_OL_3_LibraryLocation .'" type="text/javascript"></script> 
 				<script src="' . Osm_OL_3_Ext_LibraryLocation .'" type="text/javascript"></script>
+				<script src="' . Osm_OL_3_MetaboxEvents_LibraryLocation .'" type="text/javascript"></script>
 				<script src="' . Osm_map_startup_LibraryLocation . '" type="text/javascript"></script>
 				<script type="text/javascript">
 					translations[\'openlayer\'] = "' . __('open layer', 'OSM_Plugin') . '";
@@ -196,12 +202,13 @@
 	
 	
 	
-			/** if title are set - my code will run - otherwise not */
-			if ($file_title != 'no') {
+			/** if title are set - my code will run - otherwise not 
+			if ($file_title != 'no') {*/
+			if (($file_select_box != 'no') && ($file_title != 'no')){	
 				if ($hide_kml_sel_box == 'no' ){
 				$output .= '
 					<div id="osmLayerSelect">
-						<h3>' . __('click title to show layer', 'OSM') . '</h3>' . PHP_EOL;  
+					<h5>' . __('Click title to show track', 'OSM') . '</h5>' . PHP_EOL;  
 				
 				$FileTitleArray = explode(',', $file_title);
 
@@ -232,10 +239,13 @@
 				} else {
 					$map_link_name  = $MapName;
 				}
-		
+		    
 				$output .= '
+				    <!-- 
 						<a id="generatedLink" class="generatedLink" data-map="' . $MapName . '" data-map_name="' . $map_link_name . '">' . __('get link to map with choosen layers', 'OSM') . '</a>
+						-->
 					</div>';
+				
 				}
 				
 				else { /** show only textlink not box */
@@ -599,6 +609,10 @@
 			new ol.control.ZoomToExtent(),
 			new ol.control.FullScreen()
 		  ]; ' . PHP_EOL;
+	      
+		  //eventhanlder for metabox  
+		  include('osm-sc-osm_map_v3_backend.php'); 
+		  
 		if ($sc_args->issetFullScreen()){
 		  $output .= $MapName.'.addControl(osm_controls[8]);' . PHP_EOL;
 		}

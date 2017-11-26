@@ -3,7 +3,7 @@ Contributors: MiKa
 Tags: map, OpenStreetMap, googlemaps, geo, KML, GPX, geotag, geolocation, geocache, geocaching, OSM, travelogue, OpenLayers, CloudMade, marker, POI, geocode, geotagging, location, Tracks, WMS, fullscreen, OpenSeaMap, stamen, basemap, meta, widget, thunderforest
 Requires at least: 3.0
 Tested up to: 4.9
-Stable tag: 3.9.4
+Stable tag: 4.0
 
 Customize maps in your post, pages and widgets. GPX, KML and more. The easy way to map! 
 

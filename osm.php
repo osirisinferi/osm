@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 3.9.4
+Version: 4.0
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 3.0
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 3.0
 */
 load_plugin_textdomain('OSM', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V3.9.4");
+define ("PLUGIN_VER", "V4.0");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -104,6 +104,7 @@ define ("Osm_TraceLevel", DEBUG_ERROR);
 
 //define ("Osm_TraceLevel", DEBUG_INFO);
 
+
 // If the function exists this file is called as upload_mimes.
 // We don't do anything then.
 if ( ! function_exists( 'osm_restrict_mime_types' ) ) {
@@ -121,6 +122,7 @@ if ( ! function_exists( 'osm_restrict_mime_types' ) ) {
     return $mime_types;
   }
 }
+
 
 function saveGeotagAndPic(){
 
@@ -843,12 +845,13 @@ class Osm
       //wp_enqueue_script('OlScript', 'http://www.openlayers.org/api/OpenLayers.js');
       //wp_enqueue_script('OsnScript', 'http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 	  wp_enqueue_script('OlScript',Osm_OL_LibraryLocation);
-          wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
-          wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
-          wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
-          define ('OSM_LIBS_LOADED', 1);
-          define ('OL_LIBS_LOADED', 1);
-          define ('GOOGLE_LIBS_LOADED', 1);
+      wp_enqueue_script('OsnScript',Osm_OSM_LibraryLocation);
+      wp_enqueue_script('OsnScript',Osm_GOOGLE_LibraryLocation);
+      wp_enqueue_script('OsnScript',OSM_PLUGIN_JS_URL.'osm-plugin-lib.js');
+	  wp_enqueue_script('OsnScript',Osm_OL_3_MetaboxEvents_LibraryLocation);
+      define ('OSM_LIBS_LOADED', 1);
+      define ('OL_LIBS_LOADED', 1);
+      define ('GOOGLE_LIBS_LOADED', 1);
 	}
 	 else{
 	  // Errormsg is traced at another place

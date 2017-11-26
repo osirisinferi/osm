@@ -98,40 +98,45 @@ li.active a:hover {
 }
 
  
-/*----- Content of metabox tabs -----*/
-.tab-content {
-  margin: -14px 0px 0px 0px; 
-  padding:15px;
-  border-radius:3px;
-  border: 1px solid #D8D8D8;
-  background:#fff;
-}
- 
-.tab {
-  display:none;
-}
 
-.tab.active {
-  display:block;
-}
 
-.tabs select {
-	display:block;
-	margin-bottom:5px;
-}
-/* --- metabox tabs --- */
 
-.osmCheckoxHeadline {
-	display:block;
-}
+/* --- new metabox --- */
 
-.osmFileName, .osmFileTitle {
-	width:20em;
-}
+		.osm-tab-container{
+			width: 95%;
+			margin: 0 auto;
+		}
 
-.tab p.notice {
-	border:none;
-	text-decoration:italic;
-	box-shadow:none;
-	color:red;	
-}
+		ul.osm-tabs{
+			margin: 0px;
+			padding: 0px;
+			list-style: none;
+		}
+		ul.osm-tabs li{
+			background: none;
+			color: #222;
+			display: inline-block;
+			padding: 2px 5px;
+			cursor: pointer;
+		}
+
+		ul.osm-tabs li.current{
+			background: #fdfdfd;
+			color: #222;
+			border: 1px solid #D8D8D8;
+			border-bottom: none;
+		}
+
+		.tab-content{
+			margin: -7px 0px 0px 0px; 
+            padding:15px;
+            border-radius:3px;
+			display: none;
+			background: #fdfdfd;
+			border: 1px solid #D8D8D8;
+		}
+
+		.tab-content.current{
+			display: inherit;
+		}
