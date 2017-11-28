@@ -3,7 +3,7 @@
 Plugin Name: OSM
 Plugin URI: http://wp-osm-plugin.HanBlog.net
 Description: Embeds maps in your blog and adds geo data to your posts.  Find samples and a forum on the <a href="http://wp-osm-plugin.HanBlog.net">OSM plugin page</a>.  
-Version: 4.0
+Version: 4.0.1
 Author: MiKa
 Author URI: http://www.HanBlog.net
 Minimum WordPress Version Required: 3.0
@@ -27,7 +27,7 @@ Minimum WordPress Version Required: 3.0
 */
 load_plugin_textdomain('OSM', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 
-define ("PLUGIN_VER", "V4.0");
+define ("PLUGIN_VER", "V4.0.1");
 
 // modify anything about the marker for tagged posts here
 // instead of the coding.
@@ -802,7 +802,7 @@ class Osm
     return $file;
   }
   // shortcode for map with OpenLayers 3
-  function sc_OL3JS($atts) {    
+  public static function sc_OL3JS($atts) {    
     static  $MapCounter = 0;
     include('osm_map_v3/osm-sc-osm_map_v3.php');	
     return $output;

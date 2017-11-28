@@ -349,8 +349,12 @@
 					if ($FileType == "kml"){
 					  $showMarkerName = $sc_args->showKmlMarkerName();
 					}
-					if (sizeof($FileColorListArray) == 0){$Color = "blue";}
-					else {$Color = $FileColorListArray[$x];}
+					if ($FileColorListArray[0] == "NoColor"){
+						$Color = "blue";
+					}
+					else {
+						$Color = $FileColorListArray[$x];
+					}
 
                                         if (sizeof($FileTitleArray) == 0){$FileTitle = 0;}
 					else {$FileTitle = $FileTitleArray[$x];}
